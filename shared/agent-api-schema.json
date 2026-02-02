@@ -1,0 +1,327 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "League of Molts Agent API",
+  "description": "WebSocket protocol for AI agent communication",
+
+  "definitions": {
+    "Position": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      },
+      "required": ["x", "y"]
+    },
+
+    "AbilityState": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "ready": { "type": "boolean" },
+        "cooldown_remaining": { "type": "number" },
+        "mana_cost": { "type": "number" },
+        "level_required": { "type": "integer" },
+        "unlocked": { "type": "boolean" }
+      },
+      "required": ["name", "ready", "cooldown_remaining", "mana_cost"]
+    },
+
+    "Item": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "cost": { "type": "integer" },
+        "health": { "type": "number" },
+        "mana": { "type": "number" },
+        "attack_damage": { "type": "number" },
+        "ability_power": { "type": "number" },
+        "armor": { "type": "number" },
+        "magic_resist": { "type": "number" },
+        "move_speed": { "type": "number" }
+      },
+      "required": ["id", "name"]
+    },
+
+    "ChampionStats": {
+      "type": "object",
+      "properties": {
+        "attack_damage": { "type": "number" },
+        "ability_power": { "type": "number" },
+        "armor": { "type": "number" },
+        "magic_resist": { "type": "number" },
+        "move_speed": { "type": "number" },
+        "attack_range": { "type": "number" },
+        "attack_speed": { "type": "number" }
+      },
+      "required": ["attack_damage", "ability_power", "armor", "magic_resist", "move_speed", "attack_range", "attack_speed"]
+    },
+
+    "SelfObservation": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "champion": { "type": "string", "enum": ["Ironclad", "Voltaic", "Shadebow"] },
+        "position": { "$ref": "#/definitions/Position" },
+        "health": { "type": "number" },
+        "max_health": { "type": "number" },
+        "mana": { "type": "number" },
+        "max_mana": { "type": "number" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 18 },
+        "xp": { "type": "integer" },
+        "gold": { "type": "integer" },
+        "is_alive": { "type": "boolean" },
+        "abilities": {
+          "type": "object",
+          "properties": {
+            "Q": { "$ref": "#/definitions/AbilityState" },
+            "W": { "$ref": "#/definitions/AbilityState" },
+            "E": { "$ref": "#/definitions/AbilityState" },
+            "R": { "$ref": "#/definitions/AbilityState" }
+          },
+          "required": ["Q", "W", "E", "R"]
+        },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Item" },
+          "maxItems": 6
+        },
+        "stats": { "$ref": "#/definitions/ChampionStats" }
+      },
+      "required": ["id", "champion", "position", "health", "max_health", "mana", "max_mana", "level", "gold", "is_alive", "abilities", "items", "stats"]
+    },
+
+    "AllyObservation": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "champion": { "type": "string" },
+        "position": { "$ref": "#/definitions/Position" },
+        "health": { "type": "number" },
+        "max_health": { "type": "number" },
+        "mana": { "type": "number" },
+        "max_mana": { "type": "number" },
+        "level": { "type": "integer" },
+        "is_alive": { "type": "boolean" }
+      },
+      "required": ["id", "champion", "position", "health", "max_health", "level", "is_alive"]
+    },
+
+    "EnemyObservation": {
+      "type": "object",
+      "description": "Enemy data (limited by fog of war)",
+      "properties": {
+        "id": { "type": "string" },
+        "champion": { "type": "string" },
+        "position": { "$ref": "#/definitions/Position" },
+        "health": { "type": "number" },
+        "max_health": { "type": "number" },
+        "level": { "type": "integer" },
+        "is_alive": { "type": "boolean" }
+      },
+      "required": ["id", "champion", "position", "health", "max_health", "level", "is_alive"]
+    },
+
+    "MinionObservation": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "position": { "$ref": "#/definitions/Position" },
+        "health": { "type": "number" },
+        "max_health": { "type": "number" },
+        "is_melee": { "type": "boolean" }
+      },
+      "required": ["id", "position", "health", "max_health", "is_melee"]
+    },
+
+    "StructureObservation": {
+      "type": "object",
+      "properties": {
+        "towers": {
+          "type": "object",
+          "properties": {
+            "blue": { "type": "array", "items": { "type": "object" } },
+            "red": { "type": "array", "items": { "type": "object" } }
+          }
+        },
+        "nexus": {
+          "type": "object",
+          "properties": {
+            "blue": { "type": "object", "properties": { "health": { "type": "number" } } },
+            "red": { "type": "object", "properties": { "health": { "type": "number" } } }
+          }
+        }
+      }
+    }
+  },
+
+  "oneOf": [
+    {
+      "title": "AuthMessage",
+      "description": "Authentication message from agent to server",
+      "type": "object",
+      "properties": {
+        "type": { "const": "auth" },
+        "agent_id": { "type": "string", "minLength": 1 },
+        "token": { "type": "string" }
+      },
+      "required": ["type", "agent_id"]
+    },
+
+    {
+      "title": "AuthSuccessMessage",
+      "description": "Successful authentication response",
+      "type": "object",
+      "properties": {
+        "type": { "const": "auth_success" },
+        "agent_id": { "type": "string" },
+        "team": { "type": "string", "enum": ["blue", "red"] }
+      },
+      "required": ["type", "agent_id", "team"]
+    },
+
+    {
+      "title": "AuthErrorMessage",
+      "type": "object",
+      "properties": {
+        "type": { "const": "auth_error" },
+        "message": { "type": "string" }
+      },
+      "required": ["type", "message"]
+    },
+
+    {
+      "title": "ObservationMessage",
+      "description": "Game state observation sent to agent at 20Hz",
+      "type": "object",
+      "properties": {
+        "type": { "const": "observation" },
+        "tick": { "type": "integer" },
+        "match_time": { "type": "number" },
+        "self": { "$ref": "#/definitions/SelfObservation" },
+        "allies": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/AllyObservation" },
+          "maxItems": 2
+        },
+        "enemies": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EnemyObservation" },
+          "maxItems": 3
+        },
+        "minions": {
+          "type": "object",
+          "properties": {
+            "allied": { "type": "array", "items": { "$ref": "#/definitions/MinionObservation" } },
+            "enemy": { "type": "array", "items": { "$ref": "#/definitions/MinionObservation" } }
+          }
+        },
+        "structures": { "$ref": "#/definitions/StructureObservation" }
+      },
+      "required": ["type", "tick", "match_time", "self", "allies", "enemies", "minions", "structures"]
+    },
+
+    {
+      "title": "ActionMessage",
+      "description": "Actions sent from agent to server",
+      "type": "object",
+      "properties": {
+        "type": { "const": "action" },
+        "actions": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "title": "MoveAction",
+                "type": "object",
+                "properties": {
+                  "action_type": { "const": "move" },
+                  "target": { "$ref": "#/definitions/Position" }
+                },
+                "required": ["action_type", "target"]
+              },
+              {
+                "title": "StopAction",
+                "type": "object",
+                "properties": {
+                  "action_type": { "const": "stop" }
+                },
+                "required": ["action_type"]
+              },
+              {
+                "title": "AttackAction",
+                "type": "object",
+                "properties": {
+                  "action_type": { "const": "attack" },
+                  "target_id": { "type": "string" }
+                },
+                "required": ["action_type", "target_id"]
+              },
+              {
+                "title": "AbilityAction",
+                "type": "object",
+                "properties": {
+                  "action_type": { "const": "ability" },
+                  "ability": { "type": "string", "enum": ["Q", "W", "E", "R"] },
+                  "target": { "$ref": "#/definitions/Position" },
+                  "target_id": { "type": "string" }
+                },
+                "required": ["action_type", "ability"]
+              },
+              {
+                "title": "BuyAction",
+                "type": "object",
+                "properties": {
+                  "action_type": { "const": "buy" },
+                  "item_id": { "type": "string" }
+                },
+                "required": ["action_type", "item_id"]
+              }
+            ]
+          }
+        }
+      },
+      "required": ["type", "actions"]
+    },
+
+    {
+      "title": "PingMessage",
+      "type": "object",
+      "properties": {
+        "type": { "const": "ping" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["type", "timestamp"]
+    },
+
+    {
+      "title": "PongMessage",
+      "type": "object",
+      "properties": {
+        "type": { "const": "pong" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["type", "timestamp"]
+    },
+
+    {
+      "title": "MatchStartMessage",
+      "type": "object",
+      "properties": {
+        "type": { "const": "match_start" }
+      },
+      "required": ["type"]
+    },
+
+    {
+      "title": "MatchEndMessage",
+      "type": "object",
+      "properties": {
+        "type": { "const": "match_end" },
+        "winner": { "type": "string", "enum": ["blue", "red"] },
+        "duration": { "type": "number" }
+      },
+      "required": ["type", "winner", "duration"]
+    }
+  ]
+}

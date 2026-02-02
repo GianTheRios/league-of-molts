@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Redis for matchmaking and state
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # Match Orchestrator
+  orchestrator:
+    build:
+      context: ../orchestrator
+      dockerfile: ../infrastructure/Dockerfile.orchestrator
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - REDIS_URL=redis://redis:6379
+      - GODOT_PATH=/usr/local/bin/godot
+      - GAME_PATH=/app/godot-game
+      - HEADLESS=true
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../godot-game:/app/godot-game:ro
+
+  # Commentary Engine
+  commentary:
+    build:
+      context: ../commentary-engine
+      dockerfile: ../infrastructure/Dockerfile.commentary
+    ports:
+      - "9060:9060"
+    environment:
+      - MATCH_SERVER_URL=ws://orchestrator:8080
+      - BROADCAST_PORT=9060
+      - ENABLE_TTS=false
+      - ENABLE_LLM=false
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    depends_on:
+      - orchestrator
+
+  # Spectator Frontend (development)
+  spectator:
+    build:
+      context: ../spectator-frontend
+      dockerfile: ../infrastructure/Dockerfile.spectator
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_ORCHESTRATOR_URL=ws://localhost:8080
+      - VITE_COMMENTARY_URL=ws://localhost:9060
+    depends_on:
+      - orchestrator
+      - commentary
+
+volumes:
+  redis-data:
+
+networks:
+  default:
+    name: league-of-molts

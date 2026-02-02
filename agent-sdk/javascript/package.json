@@ -1,0 +1,42 @@
+{
+  "name": "lom-agent",
+  "version": "0.1.0",
+  "description": "JavaScript/TypeScript SDK for building League of Molts AI agents",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "example": "tsx examples/simple-bot.ts"
+  },
+  "keywords": [
+    "moba",
+    "ai",
+    "game",
+    "agent",
+    "league-of-molts"
+  ],
+  "author": "League of Molts Team",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.10",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  }
+}

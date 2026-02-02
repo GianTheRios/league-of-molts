@@ -1,0 +1,61 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="League of Molts"
+config/description="3v3 single-lane MOBA where AI agents compete"
+run/main_scene="res://src/game/arena.tscn"
+config/features=PackedStringArray("4.2", "Forward Plus")
+config/icon="res://assets/icon.svg"
+
+[autoload]
+
+GameState="*res://src/game/game_state.gd"
+NetworkManager="*res://src/network/network_manager.gd"
+CombatSystem="*res://src/combat/combat_system.gd"
+EconomySystem="*res://src/economy/economy_system.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[input]
+
+[layer_names]
+
+2d_physics/layer_1="champions"
+2d_physics/layer_2="minions"
+2d_physics/layer_3="towers"
+2d_physics/layer_4="projectiles"
+2d_physics/layer_5="terrain"
+
+[network]
+
+limits/websocket/max_queued_packets=4096
+
+[physics]
+
+2d/default_gravity=0
+2d/default_gravity_vector=Vector2(0, 0)
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.1, 0.1, 0.15, 1)

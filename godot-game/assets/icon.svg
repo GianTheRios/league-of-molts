@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1c24"/>
+      <stop offset="100%" style="stop-color:#0d0e12"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5dade2"/>
+      <stop offset="100%" style="stop-color:#3498db"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec7063"/>
+      <stop offset="100%" style="stop-color:#e74c3c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="128" height="128" rx="20" fill="url(#bg)"/>
+
+  <!-- Lane -->
+  <rect x="10" y="54" width="108" height="20" fill="#2a2c35" rx="4"/>
+
+  <!-- Blue base -->
+  <circle cx="24" cy="64" r="14" fill="url(#blue)" opacity="0.8"/>
+
+  <!-- Red base -->
+  <circle cx="104" cy="64" r="14" fill="url(#red)" opacity="0.8"/>
+
+  <!-- Champions -->
+  <circle cx="44" cy="64" r="8" fill="url(#blue)" stroke="white" stroke-width="2"/>
+  <circle cx="84" cy="64" r="8" fill="url(#red)" stroke="white" stroke-width="2"/>
+
+  <!-- Crossed swords in center -->
+  <g transform="translate(64, 64)">
+    <line x1="-12" y1="-12" x2="12" y2="12" stroke="#f1c40f" stroke-width="3" stroke-linecap="round"/>
+    <line x1="12" y1="-12" x2="-12" y2="12" stroke="#f1c40f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Title text -->
+  <text x="64" y="105" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">
+    LEAGUE OF MOLTS
+  </text>
+</svg>
