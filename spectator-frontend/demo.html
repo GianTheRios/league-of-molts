@@ -5,31 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>League of Molts - Demo Mode</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #0a0b0d;
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d0d0d;
+      color: #d4c4a8;
+      font-family: 'Cinzel', 'Times New Roman', serif;
       overflow: hidden;
     }
 
     .container {
       display: grid;
       grid-template-rows: 60px 1fr 90px;
-      grid-template-columns: 1fr 220px;
+      grid-template-columns: 1fr 240px;
       height: 100vh;
     }
 
-    /* Header */
+    /* Header - Dark Fantasy Style */
     .header {
       grid-column: 1 / -1;
-      background: linear-gradient(180deg, rgba(10,11,13,0.95) 0%, rgba(10,11,13,0.8) 100%);
-      border-bottom: 1px solid #1a1c24;
+      background: linear-gradient(180deg, #1a1612 0%, #0d0b09 100%);
+      border-bottom: 2px solid #3d2f1f;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -44,23 +40,21 @@
     }
 
     .team-label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
-    .team-label.blue { color: #3498db; }
-    .team-label.red { color: #e74c3c; }
+    .team-label.blue { color: #6b9ac4; }
+    .team-label.red { color: #c45c5c; }
 
-    .champions {
-      display: flex;
-      gap: 6px;
-    }
+    .champions { display: flex; gap: 6px; }
 
     .portrait {
-      width: 44px;
-      height: 44px;
-      border-radius: 6px;
+      width: 42px;
+      height: 42px;
+      border-radius: 4px;
       border: 2px solid;
       display: flex;
       flex-direction: column;
@@ -71,15 +65,25 @@
       font-size: 14px;
     }
 
-    .portrait.blue { border-color: #3498db; background: linear-gradient(135deg, #1a3a5c 0%, #0d1f33 100%); }
-    .portrait.red { border-color: #e74c3c; background: linear-gradient(135deg, #5c1a1a 0%, #330d0d 100%); }
+    .portrait.blue {
+      border-color: #4a7a9c;
+      background: linear-gradient(135deg, #1a2a3a 0%, #0d1520 100%);
+      color: #8ab4d4;
+      box-shadow: 0 0 10px rgba(74, 122, 156, 0.3);
+    }
+    .portrait.red {
+      border-color: #9c4a4a;
+      background: linear-gradient(135deg, #3a1a1a 0%, #200d0d 100%);
+      color: #d48a8a;
+      box-shadow: 0 0 10px rgba(156, 74, 74, 0.3);
+    }
     .portrait.dead { opacity: 0.4; }
 
     .portrait .level {
       position: absolute;
-      bottom: -3px;
-      right: -3px;
-      background: #0a0b0d;
+      bottom: -4px;
+      right: -4px;
+      background: #1a1612;
       border-radius: 50%;
       width: 16px;
       height: 16px;
@@ -87,196 +91,207 @@
       align-items: center;
       justify-content: center;
       font-size: 9px;
-      color: #f1c40f;
-      border: 1px solid #2a2c35;
+      color: #d4a74a;
+      border: 1px solid #3d2f1f;
     }
 
-    .portrait .hp-bar-container {
+    .portrait .bars {
       position: absolute;
-      bottom: 3px;
-      left: 3px;
-      right: 3px;
-      height: 4px;
+      bottom: 2px;
+      left: 2px;
+      right: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .portrait .hp-bar, .portrait .mp-bar {
+      height: 3px;
       background: #1a1a1a;
-      border-radius: 2px;
+      border-radius: 1px;
       overflow: hidden;
     }
 
-    .portrait .hp-bar {
-      height: 100%;
-      background: #2ecc71;
-      transition: width 0.3s;
-    }
+    .portrait .hp-bar .fill { height: 100%; background: linear-gradient(90deg, #8b4513, #a0522d); }
+    .portrait .mp-bar .fill { height: 100%; background: linear-gradient(90deg, #2f4f4f, #4a7a7a); }
 
     .center-section {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
+    }
+
+    .demo-label {
+      font-size: 10px;
+      color: #5a4a3a;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .match-time {
       font-size: 24px;
       font-weight: bold;
       font-family: monospace;
-      color: #f0f0f0;
+      color: #d4c4a8;
+      text-shadow: 0 0 10px rgba(212, 167, 74, 0.3);
     }
 
     .score {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 20px;
+      gap: 8px;
+      font-size: 16px;
       font-weight: bold;
     }
 
-    .score .blue { color: #5dade2; }
-    .score .red { color: #ec7063; }
-    .score .divider { color: #444; }
+    .score .blue { color: #6b9ac4; }
+    .score .red { color: #c45c5c; }
+    .score .divider { color: #3d2f1f; }
 
-    /* Game Area */
+    /* Game Area - Dark Fantasy */
     .game-area {
-      background: #0d1117;
+      background: radial-gradient(ellipse at center, #1a1612 0%, #0d0b09 60%, #050404 100%);
       position: relative;
       overflow: hidden;
     }
 
-    #gameCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+    #gameSvg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    /* Zoom Controls */
+    /* Controls */
+    .demo-controls {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      gap: 6px;
+      z-index: 50;
+    }
+
+    .demo-btn {
+      padding: 8px 14px;
+      background: linear-gradient(180deg, #2a2218 0%, #1a1612 100%);
+      border: 1px solid #3d2f1f;
+      border-radius: 4px;
+      color: #d4c4a8;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .demo-btn:hover { background: #3a2f22; border-color: #5a4a3a; }
+    .demo-btn.active { background: #4a3a2a; border-color: #d4a74a; color: #d4a74a; }
+
     .zoom-controls {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
+      bottom: 16px;
+      right: 260px;
       display: flex;
-      flex-direction: column;
       gap: 4px;
       z-index: 50;
     }
 
     .zoom-btn {
-      width: 36px;
-      height: 36px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #2a2c35;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 20px;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(180deg, #2a2218 0%, #1a1612 100%);
+      border: 1px solid #3d2f1f;
+      border-radius: 4px;
+      color: #d4c4a8;
+      font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
     }
 
-    .zoom-btn:hover {
-      background: rgba(50,50,50,0.8);
-    }
+    .zoom-btn:hover { background: #3a2f22; border-color: #5a4a3a; }
 
-    .zoom-level {
-      text-align: center;
-      font-size: 11px;
-      color: #888;
-      padding: 4px;
-    }
-
-    /* Kill Feed */
-    .kill-feed {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      z-index: 50;
-      pointer-events: none;
-    }
-
-    .kill-entry {
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(4px);
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    .kill-entry.blue { border-left: 3px solid #5dade2; }
-    .kill-entry.red { border-left: 3px solid #ec7063; }
-    .kill-entry .killer { font-weight: 600; }
-    .kill-entry .killer.blue { color: #5dade2; }
-    .kill-entry .killer.red { color: #ec7063; }
-    .kill-entry .victim.blue { color: #5dade2; }
-    .kill-entry .victim.red { color: #ec7063; }
-    .kill-entry .icon { opacity: 0.7; }
-
-    /* Sidebar */
+    /* Sidebar - Dark Fantasy */
     .sidebar {
-      background: rgba(10,11,13,0.95);
-      border-left: 1px solid #1a1c24;
-      padding: 12px;
+      background: linear-gradient(180deg, #1a1612 0%, #0d0b09 100%);
+      border-left: 2px solid #3d2f1f;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       overflow-y: auto;
     }
 
     .minimap-container {
-      background: #0d1117;
-      border-radius: 6px;
-      padding: 8px;
-      border: 1px solid #1a1c24;
+      background: #0d0b09;
+      border-radius: 4px;
+      padding: 6px;
+      border: 1px solid #3d2f1f;
     }
 
-    #minimapCanvas {
-      display: block;
-      width: 100%;
-      border-radius: 4px;
-    }
+    #minimapSvg { display: block; border-radius: 4px; }
 
     .panel {
-      background: #0d1117;
-      border-radius: 6px;
-      padding: 12px;
-      border: 1px solid #1a1c24;
+      background: linear-gradient(180deg, #1a1612 0%, #12100d 100%);
+      border-radius: 4px;
+      padding: 10px;
+      border: 1px solid #3d2f1f;
     }
 
     .panel-title {
       font-size: 10px;
-      color: #666;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       margin-bottom: 8px;
     }
 
-    .stat-row {
+    .panel-title.blue { color: #6b9ac4; }
+    .panel-title.red { color: #c45c5c; }
+
+    .champ-row {
       display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      padding: 4px 0;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #2a2218;
     }
 
-    .stat-label { color: #888; }
-    .stat-value { color: #fff; }
-    .stat-value.blue { color: #5dade2; }
-    .stat-value.red { color: #ec7063; }
+    .champ-row:last-child { border-bottom: none; }
 
-    /* Footer / Commentary */
+    .champ-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .champ-icon.blue { background: #1a2a3a; border: 2px solid #4a7a9c; color: #8ab4d4; }
+    .champ-icon.red { background: #3a1a1a; border: 2px solid #9c4a4a; color: #d48a8a; }
+
+    .champ-details { flex: 1; }
+    .champ-name { font-size: 11px; font-weight: 500; color: #d4c4a8; }
+    .champ-level { font-size: 9px; color: #5a4a3a; }
+
+    .champ-hp-bar {
+      height: 4px;
+      background: #1a1a1a;
+      border-radius: 2px;
+      margin-top: 3px;
+      overflow: hidden;
+    }
+
+    .champ-hp-bar .fill { height: 100%; background: linear-gradient(90deg, #8b4513, #a0522d); border-radius: 2px; }
+
+    /* Footer - Commentary */
     .footer {
       grid-column: 1 / -1;
-      background: linear-gradient(180deg, rgba(13,17,23,0.95) 0%, rgba(10,11,13,0.98) 100%);
-      border-top: 1px solid #1a1c24;
+      background: linear-gradient(180deg, #12100d 0%, #0d0b09 100%);
+      border-top: 2px solid #3d2f1f;
       display: flex;
       flex-direction: column;
     }
@@ -286,75 +301,38 @@
       align-items: center;
       gap: 8px;
       padding: 6px 16px;
-      border-bottom: 1px solid #1a1c24;
-      font-size: 12px;
-      color: #666;
+      border-bottom: 1px solid #2a2218;
+      font-size: 10px;
+      color: #5a4a3a;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .commentary-lines {
       flex: 1;
       overflow-y: auto;
-      padding: 8px 16px;
+      padding: 6px 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
     .commentary-line {
-      color: #999;
-      font-size: 13px;
-      line-height: 1.4;
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .commentary-line.kill { color: #e74c3c; font-weight: 500; }
-    .commentary-line.objective { color: #f1c40f; font-weight: 500; }
-    .commentary-line.ability { color: #9b59b6; }
-
-    /* Demo Controls */
-    .demo-controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 8px;
-      z-index: 50;
-    }
-
-    .demo-btn {
-      padding: 8px 16px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #2a2c35;
-      border-radius: 6px;
-      color: #fff;
+      color: #8a7a6a;
       font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
+      line-height: 1.4;
     }
 
-    .demo-btn:hover {
-      background: rgba(50,50,50,0.8);
-      border-color: #3498db;
-    }
-
-    .demo-btn.active {
-      background: #3498db;
-      border-color: #3498db;
-    }
+    .commentary-line.kill { color: #c45c5c; font-weight: 500; }
+    .commentary-line.objective { color: #d4a74a; font-weight: 500; }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <header class="header">
       <div class="team-section">
-        <div class="team-label blue">BLUE</div>
-        <div class="champions" id="blueChampions"></div>
+        <div class="team-label blue">Blue</div>
+        <div class="champions" id="bluePortraits"></div>
       </div>
 
       <div class="center-section">
@@ -363,18 +341,81 @@
           <span class="divider">-</span>
           <span class="red" id="redKills">0</span>
         </div>
-        <div class="match-time" id="matchTime">00:00</div>
+        <div class="match-time" id="matchTime">0:00</div>
+        <div class="demo-label">Demo Mode</div>
       </div>
 
       <div class="team-section">
-        <div class="champions" id="redChampions"></div>
-        <div class="team-label red">RED</div>
+        <div class="champions" id="redPortraits"></div>
+        <div class="team-label red">Red</div>
       </div>
     </header>
 
-    <!-- Game Area -->
     <div class="game-area" id="gameArea">
-      <canvas id="gameCanvas"></canvas>
+      <svg id="gameSvg" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <!-- Dark Fantasy Gradients -->
+          <linearGradient id="groundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1815"/>
+            <stop offset="50%" style="stop-color:#12100d"/>
+            <stop offset="100%" style="stop-color:#1a1815"/>
+          </linearGradient>
+          <linearGradient id="laneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2a2520"/>
+            <stop offset="50%" style="stop-color:#3a3530"/>
+            <stop offset="100%" style="stop-color:#2a2520"/>
+          </linearGradient>
+          <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#5a8aaa"/>
+            <stop offset="100%" style="stop-color:#3a5a7a"/>
+          </linearGradient>
+          <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#aa5a5a"/>
+            <stop offset="100%" style="stop-color:#7a3a3a"/>
+          </linearGradient>
+          <linearGradient id="stoneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#5a5550"/>
+            <stop offset="100%" style="stop-color:#3a3530"/>
+          </linearGradient>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#d4a74a"/>
+            <stop offset="100%" style="stop-color:#8b6914"/>
+          </linearGradient>
+
+          <!-- Glow Effects -->
+          <filter id="blueGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="shadow">
+            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.6"/>
+          </filter>
+
+          <!-- Stone Texture Pattern -->
+          <pattern id="stonePattern" patternUnits="userSpaceOnUse" width="20" height="20">
+            <rect width="20" height="20" fill="#2a2520"/>
+            <circle cx="5" cy="5" r="1" fill="#3a3530" opacity="0.5"/>
+            <circle cx="15" cy="12" r="1.5" fill="#1a1815" opacity="0.3"/>
+            <circle cx="8" cy="18" r="1" fill="#3a3530" opacity="0.4"/>
+          </pattern>
+        </defs>
+        <g id="worldGroup">
+          <g id="groundLayer"></g>
+          <g id="laneLayer"></g>
+          <g id="effectsLayer"></g>
+          <g id="unitsLayer"></g>
+        </g>
+      </svg>
 
       <div class="demo-controls">
         <button class="demo-btn active" id="playPauseBtn">Pause</button>
@@ -383,331 +424,230 @@
       </div>
 
       <div class="zoom-controls">
-        <button class="zoom-btn" id="zoomIn">+</button>
-        <div class="zoom-level" id="zoomLevel">100%</div>
-        <button class="zoom-btn" id="zoomOut">-</button>
+        <button class="zoom-btn" id="zoomInBtn">+</button>
+        <button class="zoom-btn" id="zoomOutBtn">-</button>
       </div>
-
-      <div class="kill-feed" id="killFeed"></div>
     </div>
 
-    <!-- Sidebar -->
     <div class="sidebar">
       <div class="minimap-container">
-        <canvas id="minimapCanvas" width="196" height="196"></canvas>
+        <svg id="minimapSvg" width="220" height="130" viewBox="0 0 220 130"></svg>
       </div>
-
       <div class="panel">
-        <div class="panel-title">Match Stats</div>
-        <div class="stat-row">
-          <span class="stat-label">Towers</span>
-          <span><span class="stat-value blue" id="blueTowers">2</span> - <span class="stat-value red" id="redTowers">2</span></span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Gold</span>
-          <span><span class="stat-value blue" id="blueGold">0</span> - <span class="stat-value red" id="redGold">0</span></span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Minions</span>
-          <span><span class="stat-value blue" id="blueMinions">0</span> - <span class="stat-value red" id="redMinions">0</span></span>
-        </div>
+        <div class="panel-title blue">Blue Covenant</div>
+        <div id="blueTeamPanel"></div>
       </div>
-
       <div class="panel">
-        <div class="panel-title">Selected Unit</div>
-        <div id="selectedInfo">
-          <div class="stat-row">
-            <span class="stat-label">Click a unit</span>
-          </div>
-        </div>
+        <div class="panel-title red">Red Covenant</div>
+        <div id="redTeamPanel"></div>
       </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
-      <div class="commentary-header">
-        <span>🎙️</span>
-        <span>Live Commentary</span>
-      </div>
+      <div class="commentary-header">Chronicle</div>
       <div class="commentary-lines" id="commentaryLines"></div>
     </footer>
   </div>
 
   <script>
-    // ============================================
-    // GAME CONFIGURATION
-    // ============================================
+    // =============================================
+    // CONFIGURATION - Base-centric layout
+    // =============================================
     const CONFIG = {
-      // Map dimensions (game units)
-      MAP_WIDTH: 12000,
-      MAP_HEIGHT: 12000,
+      // World dimensions - very large for long lane with tower spacing
+      WORLD_W: 3600,
+      WORLD_H: 2000,
 
-      // Lane runs diagonally from bottom-left to top-right
-      LANE_START: { x: 1000, y: 11000 },  // Blue base (bottom-left)
-      LANE_END: { x: 11000, y: 1000 },     // Red base (top-right)
-      LANE_WIDTH: 600,
+      // Ground plane - big isometric diamond
+      GROUND: { cx: 1800, cy: 1000, width: 3200, height: 1700 },
 
-      // Tower positions along the lane (0 = blue base, 1 = red base)
-      BLUE_TOWERS: [0.15, 0.30],  // Outer and inner
-      RED_TOWERS: [0.85, 0.70],
+      // BASE CENTERS - large fortress areas, far apart
+      BLUE_BASE: { x: 350, y: 1600 },
+      RED_BASE: { x: 3250, y: 400 },
+      BASE_RADIUS: 200,  // Large fortress bases
 
-      // Nexus positions
-      BLUE_NEXUS: { x: 800, y: 11200 },
-      RED_NEXUS: { x: 11200, y: 800 },
+      // Lane properties - wide and robust
+      LANE_WIDTH: 140,
 
-      // Spawning
-      MINION_SPAWN_INTERVAL: 5000,  // 5 seconds
+      // Tower positions - even spacing along lane
+      // 15% from base to first tower, 20% between towers, 30% middle gap
+      BLUE_TOWERS: [0.15, 0.35],
+      RED_TOWERS: [0.65, 0.85],
 
       // Combat
-      TOWER_RANGE: 600,
-      TOWER_DAMAGE: 150,
-      CHAMPION_ATTACK_RANGE: 200,
-      MINION_ATTACK_RANGE: 150,
+      TOWER_RANGE: 140,
+      ATTACK_RANGE: 70,
+      MINION_SPAWN_INTERVAL: 5000,
 
-      // Movement speeds (units per second)
-      MINION_SPEED: 300,
-      CHAMPION_SPEED: 400,
-
-      // Stats
-      MINION_HP: 300,
-      MINION_DAMAGE: 20,
-      TOWER_HP: 3000,
-      NEXUS_HP: 5000,
+      // Speeds
+      MINION_SPEED: 80,
+      CHAMPION_SPEED: 110,
     };
 
-    // ============================================
+    // Compute lane direction and derived properties
+    (function computeLaneProperties() {
+      const dx = CONFIG.RED_BASE.x - CONFIG.BLUE_BASE.x;
+      const dy = CONFIG.RED_BASE.y - CONFIG.BLUE_BASE.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+
+      // Normalized lane direction vector (blue -> red)
+      CONFIG.LANE_DIR = { x: dx / len, y: dy / len };
+
+      // Perpendicular vector (for lane width)
+      CONFIG.LANE_PERP = { x: -dy / len, y: dx / len };
+
+      // Lane extends from base CENTER to base CENTER
+      // The base platforms will render ON TOP of the lane ends
+      CONFIG.LANE_START = {
+        x: CONFIG.BLUE_BASE.x,
+        y: CONFIG.BLUE_BASE.y
+      };
+
+      CONFIG.LANE_END = {
+        x: CONFIG.RED_BASE.x,
+        y: CONFIG.RED_BASE.y
+      };
+    })();
+
+    // Dark Fantasy Color Palette
+    const COLORS = {
+      blue: {
+        dark: '#1a2a3a',
+        mid: '#3a5a7a',
+        light: '#6b9ac4',
+        glow: '#4a8ac4'
+      },
+      red: {
+        dark: '#3a1a1a',
+        mid: '#7a3a3a',
+        light: '#c45c5c',
+        glow: '#c44a4a'
+      },
+      stone: {
+        dark: '#2a2520',
+        mid: '#4a4540',
+        light: '#6a6560'
+      },
+      gold: '#d4a74a',
+      health: '#8b6930'
+    };
+
+    // =============================================
     // GAME STATE
-    // ============================================
+    // =============================================
     const gameState = {
       running: true,
       speed: 1,
       matchTime: 0,
+      zoom: 0.6,  // Start zoomed out to see the longer lane
+      panX: 0,
+      panY: 0,
 
-      // Camera
-      camera: {
-        x: CONFIG.MAP_WIDTH / 2,
-        y: CONFIG.MAP_HEIGHT / 2,
-        zoom: 0.08,
-        minZoom: 0.04,
-        maxZoom: 0.2,
-      },
+      blueTeam: { kills: 0, gold: 500, towers: [], nexus: null, champions: [], minions: [] },
+      redTeam: { kills: 0, gold: 500, towers: [], nexus: null, champions: [], minions: [] },
 
-      // Teams
-      blueTeam: {
-        kills: 0,
-        gold: 0,
-        minionsKilled: 0,
-        towers: [],
-        nexus: null,
-        champions: [],
-        minions: [],
-      },
-      redTeam: {
-        kills: 0,
-        gold: 0,
-        minionsKilled: 0,
-        towers: [],
-        nexus: null,
-        champions: [],
-        minions: [],
-      },
-
-      // Kill feed entries
-      killFeed: [],
       commentary: [],
-
-      // Selection
-      selectedUnit: null,
-
-      // Timers
       lastMinionSpawn: { blue: 0, red: 0 },
+      particles: []
     };
 
-    // ============================================
-    // ISOMETRIC PROJECTION
-    // ============================================
-    // Isometric angle (like LoL - roughly 30 degrees)
-    const ISO_ANGLE = Math.PI / 6; // 30 degrees
-    const ISO_COS = Math.cos(ISO_ANGLE);
-    const ISO_SIN = Math.sin(ISO_ANGLE);
+    // =============================================
+    // UTILITY
+    // =============================================
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const lerpPt = (p1, p2, t) => ({ x: lerp(p1.x, p2.x, t), y: lerp(p1.y, p2.y, t) });
+    const dist = (a, b) => Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
+    const norm = (a, b) => { const d = dist(a, b); return d === 0 ? { x: 0, y: 0 } : { x: (b.x - a.x) / d, y: (b.y - a.y) / d }; };
+    const fmtTime = s => `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
 
-    // Convert world coordinates to isometric screen coordinates
-    function worldToIso(x, y, z = 0) {
-      // Standard isometric projection
-      // X goes right-down, Y goes left-down
-      const isoX = (x - y) * ISO_COS;
-      const isoY = (x + y) * ISO_SIN - z;
-      return { x: isoX, y: isoY };
-    }
-
-    // ============================================
-    // UTILITY FUNCTIONS
-    // ============================================
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
-
-    function lerpPoint(p1, p2, t) {
-      return {
-        x: lerp(p1.x, p2.x, t),
-        y: lerp(p1.y, p2.y, t),
-      };
-    }
-
-    function distance(p1, p2) {
-      const dx = p2.x - p1.x;
-      const dy = p2.y - p1.y;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    function normalize(p1, p2) {
-      const d = distance(p1, p2);
-      if (d === 0) return { x: 0, y: 0 };
-      return {
-        x: (p2.x - p1.x) / d,
-        y: (p2.y - p1.y) / d,
-      };
-    }
-
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    function formatGold(gold) {
-      if (gold >= 1000) {
-        return (gold / 1000).toFixed(1) + 'k';
-      }
-      return gold.toString();
-    }
-
-    // ============================================
-    // UNIT CLASSES
-    // ============================================
+    // =============================================
+    // UNITS
+    // =============================================
     class Unit {
       constructor(team, x, y) {
         this.team = team;
-        this.x = x;
-        this.y = y;
-        this.targetX = x;
-        this.targetY = y;
-        this.hp = 100;
-        this.maxHp = 100;
+        this.x = x; this.y = y;
+        this.hp = 100; this.maxHp = 100;
         this.damage = 10;
-        this.attackRange = 100;
-        this.attackCooldown = 1000;
-        this.lastAttack = 0;
-        this.speed = 300;
+        this.attackRange = CONFIG.ATTACK_RANGE;
+        this.attackCd = 1000;
+        this.lastAtk = 0;
+        this.speed = 50;
         this.dead = false;
         this.target = null;
       }
 
-      takeDamage(amount, attacker) {
-        this.hp -= amount;
-        if (this.hp <= 0) {
-          this.hp = 0;
-          this.dead = true;
-          this.onDeath(attacker);
-        }
+      takeDamage(amt, attacker) {
+        this.hp -= amt;
+        if (this.hp <= 0) { this.hp = 0; this.dead = true; this.onDeath(attacker); }
       }
 
       onDeath(killer) {}
 
       update(dt, now) {
         if (this.dead) return;
-
-        // Find target if none
-        if (!this.target || this.target.dead) {
-          this.target = this.findTarget();
-        }
+        if (!this.target || this.target.dead) this.target = this.findTarget();
 
         if (this.target) {
-          const dist = distance(this, this.target);
-
-          if (dist <= this.attackRange) {
-            // Attack
-            if (now - this.lastAttack >= this.attackCooldown) {
-              this.attack(this.target);
-              this.lastAttack = now;
+          const d = dist(this, this.target);
+          if (d <= this.attackRange) {
+            if (now - this.lastAtk >= this.attackCd) {
+              this.target.takeDamage(this.damage, this);
+              this.lastAtk = now;
             }
           } else {
-            // Move toward target
             this.moveToward(this.target, dt);
           }
         } else {
-          // No target, move down lane
           this.moveDownLane(dt);
         }
       }
 
-      moveToward(target, dt) {
-        const dir = normalize(this, target);
+      moveToward(tgt, dt) {
+        const dir = norm(this, tgt);
         this.x += dir.x * this.speed * dt;
         this.y += dir.y * this.speed * dt;
       }
 
-      moveDownLane(dt) {
-        // Override in subclass
-      }
-
-      attack(target) {
-        target.takeDamage(this.damage, this);
-      }
-
-      findTarget() {
-        return null;
-      }
+      moveDownLane(dt) {}
+      findTarget() { return null; }
     }
 
     class Minion extends Unit {
       constructor(team, x, y) {
         super(team, x, y);
-        this.hp = CONFIG.MINION_HP;
-        this.maxHp = CONFIG.MINION_HP;
-        this.damage = CONFIG.MINION_DAMAGE;
-        this.attackRange = CONFIG.MINION_ATTACK_RANGE;
-        this.attackCooldown = 1000;
+        this.hp = this.maxHp = 200;
+        this.damage = 10;
         this.speed = CONFIG.MINION_SPEED;
-        this.type = 'minion';
         this.goldValue = 20;
+        this.type = 'minion';
       }
 
       moveDownLane(dt) {
-        const target = this.team === 'blue' ? CONFIG.LANE_END : CONFIG.LANE_START;
-        const dir = normalize(this, target);
+        const tgt = this.team === 'blue' ? CONFIG.LANE_END : CONFIG.LANE_START;
+        const dir = norm(this, tgt);
         this.x += dir.x * this.speed * dt;
         this.y += dir.y * this.speed * dt;
       }
 
       findTarget() {
-        const enemies = this.team === 'blue' ?
-          [...gameState.redTeam.minions, ...gameState.redTeam.champions] :
-          [...gameState.blueTeam.minions, ...gameState.blueTeam.champions];
+        const enemies = this.team === 'blue'
+          ? [...gameState.redTeam.minions, ...gameState.redTeam.champions]
+          : [...gameState.blueTeam.minions, ...gameState.blueTeam.champions];
+        const towers = this.team === 'blue' ? gameState.redTeam.towers : gameState.blueTeam.towers;
+        const all = [...enemies.filter(e => !e.dead), ...towers.filter(t => !t.dead)];
 
-        // Also consider towers
-        const enemyTowers = this.team === 'blue' ? gameState.redTeam.towers : gameState.blueTeam.towers;
-        const allEnemies = [...enemies.filter(e => !e.dead), ...enemyTowers.filter(t => !t.dead)];
-
-        let closest = null;
-        let closestDist = Infinity;
-
-        for (const enemy of allEnemies) {
-          const d = distance(this, enemy);
-          if (d < closestDist && d < 500) {
-            closest = enemy;
-            closestDist = d;
-          }
+        let closest = null, closestD = 150;
+        for (const e of all) {
+          const d = dist(this, e);
+          if (d < closestD) { closest = e; closestD = d; }
         }
-
         return closest;
       }
 
       onDeath(killer) {
-        if (killer && killer.team) {
-          const team = killer.team === 'blue' ? gameState.blueTeam : gameState.redTeam;
-          team.gold += this.goldValue;
-          team.minionsKilled++;
+        if (killer?.team) {
+          (killer.team === 'blue' ? gameState.blueTeam : gameState.redTeam).gold += this.goldValue;
         }
       }
     }
@@ -716,48 +656,33 @@
       constructor(team, name, x, y) {
         super(team, x, y);
         this.name = name;
-        this.hp = 800;
-        this.maxHp = 800;
-        this.mana = 300;
-        this.maxMana = 300;
+        this.hp = this.maxHp = 800;
+        this.mana = this.maxMana = 400;
         this.level = 1;
-        this.damage = 60;
-        this.attackRange = CONFIG.CHAMPION_ATTACK_RANGE;
-        this.attackCooldown = 800;
+        this.damage = 45;
         this.speed = CONFIG.CHAMPION_SPEED;
-        this.type = 'champion';
         this.respawnTime = 0;
-        this.goldValue = 300;
-        this.killValue = 300;
+        this.type = 'champion';
       }
 
       findTarget() {
-        const enemies = this.team === 'blue' ?
-          [...gameState.redTeam.minions, ...gameState.redTeam.champions] :
-          [...gameState.blueTeam.minions, ...gameState.blueTeam.champions];
+        const enemies = this.team === 'blue'
+          ? [...gameState.redTeam.minions, ...gameState.redTeam.champions]
+          : [...gameState.blueTeam.minions, ...gameState.blueTeam.champions];
 
-        let closest = null;
-        let closestDist = Infinity;
-
-        for (const enemy of enemies) {
-          if (enemy.dead) continue;
-          const d = distance(this, enemy);
-          if (d < closestDist) {
-            closest = enemy;
-            closestDist = d;
-          }
+        let closest = null, closestD = 200;
+        for (const e of enemies) {
+          if (e.dead) continue;
+          const d = dist(this, e);
+          if (d < closestD) { closest = e; closestD = d; }
         }
-
         return closest;
       }
 
       moveDownLane(dt) {
-        // Champions move toward center of map for fights
-        const center = lerpPoint(CONFIG.LANE_START, CONFIG.LANE_END, 0.5);
-        const dist = distance(this, center);
-
-        if (dist > 500) {
-          const dir = normalize(this, center);
+        const center = lerpPt(CONFIG.LANE_START, CONFIG.LANE_END, 0.5);
+        if (dist(this, center) > 120) {
+          const dir = norm(this, center);
           this.x += dir.x * this.speed * dt;
           this.y += dir.y * this.speed * dt;
         }
@@ -765,81 +690,63 @@
 
       onDeath(killer) {
         this.respawnTime = 10 + this.level * 2;
-
-        if (killer && killer.team) {
+        if (killer?.team) {
           const team = killer.team === 'blue' ? gameState.blueTeam : gameState.redTeam;
           team.kills++;
-          team.gold += this.killValue;
-
-          addKillFeedEntry(killer, this);
-          addCommentary(`${killer.name || 'A minion'} takes down ${this.name}!`, 'kill');
+          team.gold += 300;
+          addCommentary(`${killer.name || 'Minion'} has felled ${this.name}!`, 'kill');
         }
       }
 
       respawn() {
-        const spawnPos = this.team === 'blue' ? CONFIG.LANE_START : CONFIG.LANE_END;
-        this.x = spawnPos.x + (Math.random() - 0.5) * 200;
-        this.y = spawnPos.y + (Math.random() - 0.5) * 200;
+        // Respawn at base center with perpendicular spread
+        const base = this.team === 'blue' ? CONFIG.BLUE_BASE : CONFIG.RED_BASE;
+        const perpOffset = (Math.random() - 0.5) * 40;
+        this.x = base.x + CONFIG.LANE_PERP.x * perpOffset;
+        this.y = base.y + CONFIG.LANE_PERP.y * perpOffset;
         this.hp = this.maxHp;
         this.mana = this.maxMana;
         this.dead = false;
         this.target = null;
+        this.level = Math.min(18, this.level + 1);
       }
     }
 
     class Tower extends Unit {
       constructor(team, x, y, isOuter) {
         super(team, x, y);
-        this.hp = CONFIG.TOWER_HP;
-        this.maxHp = CONFIG.TOWER_HP;
-        this.damage = CONFIG.TOWER_DAMAGE;
+        this.hp = this.maxHp = 3000;
+        this.damage = 180;
         this.attackRange = CONFIG.TOWER_RANGE;
-        this.attackCooldown = 1000;
-        this.type = 'tower';
         this.isOuter = isOuter;
-        this.goldValue = 150;
+        this.type = 'tower';
       }
 
-      moveToward() {} // Towers don't move
+      moveToward() {}
       moveDownLane() {}
 
       findTarget() {
-        // Prioritize minions, then champions
-        const enemyMinions = this.team === 'blue' ? gameState.redTeam.minions : gameState.blueTeam.minions;
-        const enemyChampions = this.team === 'blue' ? gameState.redTeam.champions : gameState.blueTeam.champions;
+        const minions = this.team === 'blue' ? gameState.redTeam.minions : gameState.blueTeam.minions;
+        const champs = this.team === 'blue' ? gameState.redTeam.champions : gameState.blueTeam.champions;
 
-        for (const minion of enemyMinions) {
-          if (!minion.dead && distance(this, minion) <= this.attackRange) {
-            return minion;
-          }
-        }
-
-        for (const champ of enemyChampions) {
-          if (!champ.dead && distance(this, champ) <= this.attackRange) {
-            return champ;
-          }
-        }
-
+        for (const m of minions) if (!m.dead && dist(this, m) <= this.attackRange) return m;
+        for (const c of champs) if (!c.dead && dist(this, c) <= this.attackRange) return c;
         return null;
-      }
-
-      onDeath(killer) {
-        if (killer && killer.team) {
-          const team = killer.team === 'blue' ? gameState.blueTeam : gameState.redTeam;
-          team.gold += this.goldValue;
-
-          addCommentary(`${this.team.toUpperCase()} ${this.isOuter ? 'outer' : 'inner'} tower destroyed!`, 'objective');
-        }
       }
 
       update(dt, now) {
         if (this.dead) return;
-
         this.target = this.findTarget();
+        if (this.target && now - this.lastAtk >= this.attackCd) {
+          this.target.takeDamage(this.damage, this);
+          this.lastAtk = now;
+        }
+      }
 
-        if (this.target && now - this.lastAttack >= this.attackCooldown) {
-          this.attack(this.target);
-          this.lastAttack = now;
+      onDeath(killer) {
+        if (killer?.team) {
+          (killer.team === 'blue' ? gameState.blueTeam : gameState.redTeam).gold += 200;
+          addCommentary(`The ${this.team} tower has fallen!`, 'objective');
         }
       }
     }
@@ -847,1101 +754,864 @@
     class Nexus extends Unit {
       constructor(team, x, y) {
         super(team, x, y);
-        this.hp = CONFIG.NEXUS_HP;
-        this.maxHp = CONFIG.NEXUS_HP;
+        this.hp = this.maxHp = 5000;
         this.type = 'nexus';
       }
-
       moveToward() {}
       moveDownLane() {}
       findTarget() { return null; }
       update() {}
-
       onDeath() {
-        const winner = this.team === 'blue' ? 'RED' : 'BLUE';
-        addCommentary(`VICTORY! ${winner} team wins the game!`, 'objective');
+        addCommentary(`The ${this.team === 'blue' ? 'Red' : 'Blue'} Covenant is VICTORIOUS!`, 'objective');
         gameState.running = false;
       }
     }
 
-    // ============================================
-    // GAME INITIALIZATION
-    // ============================================
+    // =============================================
+    // GAME INIT
+    // =============================================
     function initGame() {
-      // Create Blue towers
+      // Place towers along the lane
       CONFIG.BLUE_TOWERS.forEach((t, i) => {
-        const pos = lerpPoint(CONFIG.LANE_START, CONFIG.LANE_END, t);
-        gameState.blueTeam.towers.push(new Tower('blue', pos.x, pos.y, i === 0));
+        const p = lerpPt(CONFIG.LANE_START, CONFIG.LANE_END, t);
+        gameState.blueTeam.towers.push(new Tower('blue', p.x, p.y, i === 0));
       });
-
-      // Create Red towers
       CONFIG.RED_TOWERS.forEach((t, i) => {
-        const pos = lerpPoint(CONFIG.LANE_START, CONFIG.LANE_END, t);
-        gameState.redTeam.towers.push(new Tower('red', pos.x, pos.y, i === 0));
+        const p = lerpPt(CONFIG.LANE_START, CONFIG.LANE_END, t);
+        gameState.redTeam.towers.push(new Tower('red', p.x, p.y, i === 0));
       });
 
-      // Create Nexuses
-      gameState.blueTeam.nexus = new Nexus('blue', CONFIG.BLUE_NEXUS.x, CONFIG.BLUE_NEXUS.y);
-      gameState.redTeam.nexus = new Nexus('red', CONFIG.RED_NEXUS.x, CONFIG.RED_NEXUS.y);
+      // Place nexus at BASE CENTERS (not offset from lane)
+      gameState.blueTeam.nexus = new Nexus('blue', CONFIG.BLUE_BASE.x, CONFIG.BLUE_BASE.y);
+      gameState.redTeam.nexus = new Nexus('red', CONFIG.RED_BASE.x, CONFIG.RED_BASE.y);
 
-      // Create Champions
-      const blueSpawn = CONFIG.LANE_START;
-      const redSpawn = CONFIG.LANE_END;
-
-      const blueChamps = ['Ironclad', 'Voltaic', 'Shadebow'];
-      const redChamps = ['Ironclad', 'Voltaic', 'Shadebow'];
-
-      blueChamps.forEach((name, i) => {
-        const champ = new Champion('blue', name,
-          blueSpawn.x + (i - 1) * 150,
-          blueSpawn.y + (i - 1) * -150
-        );
-        gameState.blueTeam.champions.push(champ);
+      // Spawn champions in their base areas (spread perpendicular to lane)
+      const names = ['Ironclad', 'Voltaic', 'Shadebow'];
+      names.forEach((name, i) => {
+        const offset = (i - 1) * 30; // -30, 0, 30 perpendicular spread
+        gameState.blueTeam.champions.push(new Champion('blue', name,
+          CONFIG.BLUE_BASE.x + CONFIG.LANE_PERP.x * offset,
+          CONFIG.BLUE_BASE.y + CONFIG.LANE_PERP.y * offset
+        ));
+        gameState.redTeam.champions.push(new Champion('red', name,
+          CONFIG.RED_BASE.x + CONFIG.LANE_PERP.x * offset,
+          CONFIG.RED_BASE.y + CONFIG.LANE_PERP.y * offset
+        ));
       });
 
-      redChamps.forEach((name, i) => {
-        const champ = new Champion('red', name,
-          redSpawn.x + (i - 1) * -150,
-          redSpawn.y + (i - 1) * 150
-        );
-        gameState.redTeam.champions.push(champ);
-      });
-
-      // Initial commentary
-      addCommentary('Welcome to League of Molts! The match is about to begin.', 'objective');
-      addCommentary('Minions will spawn shortly...', '');
-
-      updateUI();
+      addCommentary('The battle for the Molten Throne begins...', 'objective');
+      addCommentary('Warriors gather at their fortresses.', '');
     }
 
-    // ============================================
-    // SPAWNING
-    // ============================================
     function spawnMinion(team) {
-      const spawn = team === 'blue' ? CONFIG.LANE_START : CONFIG.LANE_END;
-      const offset = (Math.random() - 0.5) * 100;
-
-      const minion = new Minion(team, spawn.x + offset, spawn.y + offset);
-
-      if (team === 'blue') {
-        gameState.blueTeam.minions.push(minion);
-      } else {
-        gameState.redTeam.minions.push(minion);
-      }
+      // Spawn minions from the base area (near lane start/end)
+      const base = team === 'blue' ? CONFIG.BLUE_BASE : CONFIG.RED_BASE;
+      const perpOffset = (Math.random() - 0.5) * 30; // Spread perpendicular to lane
+      const m = new Minion(team,
+        base.x + CONFIG.LANE_PERP.x * perpOffset,
+        base.y + CONFIG.LANE_PERP.y * perpOffset
+      );
+      (team === 'blue' ? gameState.blueTeam : gameState.redTeam).minions.push(m);
     }
 
-    // ============================================
+    // =============================================
     // GAME LOOP
-    // ============================================
+    // =============================================
     let lastTime = 0;
 
-    function gameLoop(timestamp) {
-      const dt = Math.min((timestamp - lastTime) / 1000, 0.1) * gameState.speed;
-      lastTime = timestamp;
+    function gameLoop(ts) {
+      const dt = Math.min((ts - lastTime) / 1000, 0.1) * gameState.speed;
+      lastTime = ts;
 
       if (gameState.running) {
         gameState.matchTime += dt;
-
-        // Spawn minions every 5 seconds
         const now = gameState.matchTime * 1000;
 
         if (now - gameState.lastMinionSpawn.blue >= CONFIG.MINION_SPAWN_INTERVAL) {
           spawnMinion('blue');
           gameState.lastMinionSpawn.blue = now;
         }
-
         if (now - gameState.lastMinionSpawn.red >= CONFIG.MINION_SPAWN_INTERVAL) {
           spawnMinion('red');
           gameState.lastMinionSpawn.red = now;
         }
 
-        // Update all units
-        const allUnits = [
-          ...gameState.blueTeam.towers,
-          ...gameState.redTeam.towers,
-          ...gameState.blueTeam.champions,
-          ...gameState.redTeam.champions,
-          ...gameState.blueTeam.minions,
-          ...gameState.redTeam.minions,
+        const all = [
+          ...gameState.blueTeam.towers, ...gameState.redTeam.towers,
+          ...gameState.blueTeam.champions, ...gameState.redTeam.champions,
+          ...gameState.blueTeam.minions, ...gameState.redTeam.minions,
         ];
+        all.forEach(u => u.update(dt, now));
 
-        allUnits.forEach(unit => unit.update(dt, now));
-
-        // Handle champion respawns
-        [...gameState.blueTeam.champions, ...gameState.redTeam.champions].forEach(champ => {
-          if (champ.dead && champ.respawnTime > 0) {
-            champ.respawnTime -= dt;
-            if (champ.respawnTime <= 0) {
-              champ.respawn();
-              addCommentary(`${champ.name} has respawned!`, '');
-            }
+        [...gameState.blueTeam.champions, ...gameState.redTeam.champions].forEach(c => {
+          if (c.dead && c.respawnTime > 0) {
+            c.respawnTime -= dt;
+            if (c.respawnTime <= 0) c.respawn();
           }
         });
 
-        // Clean up dead minions
         gameState.blueTeam.minions = gameState.blueTeam.minions.filter(m => !m.dead);
         gameState.redTeam.minions = gameState.redTeam.minions.filter(m => !m.dead);
-
-        updateUI();
       }
 
       render();
+      updateUI();
       requestAnimationFrame(gameLoop);
     }
 
-    // ============================================
-    // RENDERING
-    // ============================================
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const minimapCanvas = document.getElementById('minimapCanvas');
-    const minimapCtx = minimapCanvas.getContext('2d');
+    // =============================================
+    // SVG RENDERING - Dark Fantasy Style
+    // =============================================
+    const svg = document.getElementById('gameSvg');
+    const groundLayer = document.getElementById('groundLayer');
+    const laneLayer = document.getElementById('laneLayer');
+    const effectsLayer = document.getElementById('effectsLayer');
+    const unitsLayer = document.getElementById('unitsLayer');
+    const minimapSvg = document.getElementById('minimapSvg');
 
-    function resizeCanvas() {
-      const gameArea = document.getElementById('gameArea');
-      canvas.width = gameArea.clientWidth;
-      canvas.height = gameArea.clientHeight;
-    }
-
-    function worldToScreen(x, y, z = 0) {
-      const { camera } = gameState;
-      // First convert to isometric coordinates
-      const iso = worldToIso(x - camera.x, y - camera.y, z);
-      // Then apply zoom and center on screen
-      return {
-        x: iso.x * camera.zoom + canvas.width / 2,
-        y: iso.y * camera.zoom + canvas.height / 2,
-      };
-    }
-
-    function screenToWorld(sx, sy) {
-      const { camera } = gameState;
-      // Reverse the isometric projection
-      const isoX = (sx - canvas.width / 2) / camera.zoom;
-      const isoY = (sy - canvas.height / 2) / camera.zoom;
-
-      // Inverse isometric transformation
-      const worldX = (isoX / ISO_COS + isoY / ISO_SIN) / 2 + camera.x;
-      const worldY = (isoY / ISO_SIN - isoX / ISO_COS) / 2 + camera.y;
-
-      return { x: worldX, y: worldY };
+    function updateViewBox() {
+      const w = CONFIG.WORLD_W / gameState.zoom;
+      const h = CONFIG.WORLD_H / gameState.zoom;
+      const x = (CONFIG.WORLD_W - w) / 2 + gameState.panX;
+      const y = (CONFIG.WORLD_H - h) / 2 + gameState.panY;
+      svg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
     }
 
     function render() {
-      ctx.fillStyle = '#1a1f2e';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+      updateViewBox();
       renderGround();
       renderLane();
-      renderJungle();
-
-      // Depth sort all renderable objects (higher Y = render later = appears in front)
-      const renderables = collectRenderables();
-      renderables.sort((a, b) => (a.y + a.x) - (b.y + b.x));
-
-      renderables.forEach(obj => {
-        switch(obj.type) {
-          case 'nexus': renderNexus(obj); break;
-          case 'tower': renderTower(obj); break;
-          case 'minion': renderMinion(obj); break;
-          case 'champion': renderChampion(obj); break;
-          case 'tree': renderTree(obj); break;
-        }
-      });
-
+      renderUnits();
       renderMinimap();
     }
 
-    function collectRenderables() {
-      const objects = [];
-
-      // Trees (generated once, cached)
-      if (!gameState.trees) {
-        gameState.trees = generateTrees();
-      }
-      objects.push(...gameState.trees);
-
-      // Nexuses
-      if (gameState.blueTeam.nexus && !gameState.blueTeam.nexus.dead) {
-        objects.push({ ...gameState.blueTeam.nexus, type: 'nexus' });
-      }
-      if (gameState.redTeam.nexus && !gameState.redTeam.nexus.dead) {
-        objects.push({ ...gameState.redTeam.nexus, type: 'nexus' });
-      }
-
-      // Towers
-      [...gameState.blueTeam.towers, ...gameState.redTeam.towers]
-        .filter(t => !t.dead)
-        .forEach(t => objects.push({ ...t, type: 'tower' }));
-
-      // Minions
-      [...gameState.blueTeam.minions, ...gameState.redTeam.minions]
-        .filter(m => !m.dead)
-        .forEach(m => objects.push({ ...m, type: 'minion' }));
-
-      // Champions
-      [...gameState.blueTeam.champions, ...gameState.redTeam.champions]
-        .forEach(c => objects.push({ ...c, type: 'champion' }));
-
-      return objects;
-    }
-
-    function generateTrees() {
-      const trees = [];
-      const rng = mulberry32(12345); // Seeded RNG for consistent trees
-
-      for (let i = 0; i < 150; i++) {
-        const x = rng() * CONFIG.MAP_WIDTH;
-        const y = rng() * CONFIG.MAP_HEIGHT;
-
-        // Check distance from lane
-        const distToLane = pointToLineDistance(
-          { x, y },
-          CONFIG.LANE_START,
-          CONFIG.LANE_END
-        );
-
-        // Only place trees away from lane
-        if (distToLane > 1200) {
-          trees.push({
-            x, y,
-            type: 'tree',
-            size: 60 + rng() * 40,
-            variant: Math.floor(rng() * 3)
-          });
-        }
-      }
-      return trees;
-    }
-
-    // Seeded random number generator
-    function mulberry32(seed) {
-      return function() {
-        let t = seed += 0x6D2B79F5;
-        t = Math.imul(t ^ t >>> 15, t | 1);
-        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
-      };
-    }
-
-    function pointToLineDistance(point, lineStart, lineEnd) {
-      const A = point.x - lineStart.x;
-      const B = point.y - lineStart.y;
-      const C = lineEnd.x - lineStart.x;
-      const D = lineEnd.y - lineStart.y;
-      const dot = A * C + B * D;
-      const lenSq = C * C + D * D;
-      let param = -1;
-      if (lenSq !== 0) param = dot / lenSq;
-
-      let xx, yy;
-      if (param < 0) { xx = lineStart.x; yy = lineStart.y; }
-      else if (param > 1) { xx = lineEnd.x; yy = lineEnd.y; }
-      else { xx = lineStart.x + param * C; yy = lineStart.y + param * D; }
-
-      const dx = point.x - xx;
-      const dy = point.y - yy;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
     function renderGround() {
-      // Draw isometric ground tiles
-      const tileSize = 400;
-      const { camera } = gameState;
+      groundLayer.innerHTML = '';
+      const { cx, cy, width, height } = CONFIG.GROUND;
 
-      ctx.strokeStyle = '#252d3d';
-      ctx.lineWidth = 1;
+      // Main ground - dark earth
+      const ground = createSVG('polygon', {
+        points: `${cx},${cy - height/2} ${cx + width/2},${cy} ${cx},${cy + height/2} ${cx - width/2},${cy}`,
+        fill: 'url(#groundGrad)',
+        opacity: '0.95'
+      });
+      groundLayer.appendChild(ground);
 
-      // Draw diamond grid
-      for (let x = -tileSize; x <= CONFIG.MAP_WIDTH + tileSize; x += tileSize) {
-        const start = worldToScreen(x, 0);
-        const end = worldToScreen(x, CONFIG.MAP_HEIGHT);
-        ctx.beginPath();
-        ctx.moveTo(start.x, start.y);
-        ctx.lineTo(end.x, end.y);
-        ctx.stroke();
+      // Subtle grid for depth
+      const gridGroup = createSVG('g', { stroke: '#2a2520', 'stroke-width': '1', opacity: '0.25' });
+      for (let i = -10; i <= 10; i++) {
+        const offset = i * (width / 20);
+        const line = createSVG('line', {
+          x1: cx + offset / 2,
+          y1: cy - height / 2 + Math.abs(offset) * 0.53,
+          x2: cx + offset / 2,
+          y2: cy + height / 2 - Math.abs(offset) * 0.53
+        });
+        gridGroup.appendChild(line);
       }
-      for (let y = -tileSize; y <= CONFIG.MAP_HEIGHT + tileSize; y += tileSize) {
-        const start = worldToScreen(0, y);
-        const end = worldToScreen(CONFIG.MAP_WIDTH, y);
-        ctx.beginPath();
-        ctx.moveTo(start.x, start.y);
-        ctx.lineTo(end.x, end.y);
-        ctx.stroke();
+      groundLayer.appendChild(gridGroup);
+
+      // Ambient particles (floating dust/embers)
+      for (let i = 0; i < 15; i++) {
+        const px = cx + (Math.random() - 0.5) * width * 0.8;
+        const py = cy + (Math.random() - 0.5) * height * 0.8;
+        const particle = createSVG('circle', {
+          cx: px, cy: py,
+          r: 1 + Math.random() * 2,
+          fill: '#d4a74a',
+          opacity: 0.1 + Math.random() * 0.2
+        });
+        groundLayer.appendChild(particle);
       }
+    }
+
+    function renderBase(base, team) {
+      const { x, y } = base;
+      const r = CONFIG.BASE_RADIUS;
+      const col = COLORS[team];
+
+      const platformGroup = createSVG('g', {});
+
+      // Large fortress area - isometric diamond
+
+      // Outer shadow
+      platformGroup.appendChild(createSVG('ellipse', {
+        cx: x + 8, cy: y + 15,
+        rx: r * 1.1, ry: r * 0.55,
+        fill: '#000',
+        opacity: '0.4'
+      }));
+
+      // Outer fortress wall/boundary
+      platformGroup.appendChild(createSVG('polygon', {
+        points: `${x},${y - r * 0.55} ${x + r * 1.05},${y} ${x},${y + r * 0.55} ${x - r * 1.05},${y}`,
+        fill: '#1a1815',
+        stroke: col.dark,
+        'stroke-width': '4'
+      }));
+
+      // Main fortress floor
+      platformGroup.appendChild(createSVG('polygon', {
+        points: `${x},${y - r * 0.5} ${x + r},${y} ${x},${y + r * 0.5} ${x - r},${y}`,
+        fill: COLORS.stone.dark,
+        stroke: col.mid,
+        'stroke-width': '2'
+      }));
+
+      // Inner courtyard
+      const innerR = r * 0.6;
+      platformGroup.appendChild(createSVG('polygon', {
+        points: `${x},${y - innerR * 0.5} ${x + innerR},${y} ${x},${y + innerR * 0.5} ${x - innerR},${y}`,
+        fill: COLORS.stone.mid,
+        opacity: '0.7'
+      }));
+
+      // Decorative corner towers (visual only)
+      const corners = [
+        { cx: x, cy: y - r * 0.5 },
+        { cx: x + r, cy: y },
+        { cx: x, cy: y + r * 0.5 },
+        { cx: x - r, cy: y }
+      ];
+      corners.forEach(corner => {
+        platformGroup.appendChild(createSVG('circle', {
+          cx: corner.cx, cy: corner.cy, r: 12,
+          fill: col.dark,
+          stroke: col.mid,
+          'stroke-width': '2'
+        }));
+      });
+
+      // Team glow emanating from center
+      platformGroup.appendChild(createSVG('ellipse', {
+        cx: x, cy: y,
+        rx: r * 0.4, ry: r * 0.2,
+        fill: col.glow,
+        opacity: '0.3',
+        filter: `url(#${team}Glow)`
+      }));
+
+      return platformGroup;
     }
 
     function renderLane() {
-      const { camera } = gameState;
+      laneLayer.innerHTML = '';
+      const { LANE_START: start, LANE_END: end, LANE_WIDTH: w, LANE_PERP: perp } = CONFIG;
 
-      // Draw lane as isometric path
-      const lanePoints = [];
-      const segments = 20;
+      // Use pre-computed perpendicular vector
+      const px = perp.x * w / 2;
+      const py = perp.y * w / 2;
 
-      for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
-        const point = lerpPoint(CONFIG.LANE_START, CONFIG.LANE_END, t);
-        lanePoints.push(point);
+      // Stone path base (slightly wider for shadow effect)
+      // Lane runs from base center to base center
+      const laneBase = createSVG('polygon', {
+        points: `${start.x + px * 1.3},${start.y + py * 1.3} ${end.x + px * 1.3},${end.y + py * 1.3} ${end.x - px * 1.3},${end.y - py * 1.3} ${start.x - px * 1.3},${start.y - py * 1.3}`,
+        fill: '#1a1815',
+        opacity: '0.9'
+      });
+      laneLayer.appendChild(laneBase);
+
+      // Main stone lane
+      const lane = createSVG('polygon', {
+        points: `${start.x + px},${start.y + py} ${end.x + px},${end.y + py} ${end.x - px},${end.y - py} ${start.x - px},${start.y - py}`,
+        fill: 'url(#laneGrad)',
+        stroke: '#3d3530',
+        'stroke-width': '2'
+      });
+      laneLayer.appendChild(lane);
+
+      // Render base platforms AFTER lane (on top) - covers lane ends cleanly
+      laneLayer.appendChild(renderBase(CONFIG.BLUE_BASE, 'blue'));
+      laneLayer.appendChild(renderBase(CONFIG.RED_BASE, 'red'));
+
+      // Lane markings - ancient runes along the path
+      const numRunes = 12;
+      for (let i = 1; i < numRunes; i++) {
+        const t = i / numRunes;
+        const p = lerpPt(start, end, t);
+        const rune = createSVG('circle', {
+          cx: p.x, cy: p.y,
+          r: 4,
+          fill: 'none',
+          stroke: t < 0.5 ? '#4a7a9c' : '#9c4a4a',
+          'stroke-width': '1',
+          opacity: '0.3'
+        });
+        laneLayer.appendChild(rune);
       }
 
-      // Lane width in isometric
-      const laneWidth = CONFIG.LANE_WIDTH;
-
-      // Calculate perpendicular direction for lane width
-      const dir = normalize(CONFIG.LANE_START, CONFIG.LANE_END);
-      const perp = { x: -dir.y, y: dir.x };
-
-      // Draw lane surface
-      ctx.fillStyle = '#2d3748';
-      ctx.beginPath();
-
-      // Top edge
-      let firstPoint = true;
-      for (const p of lanePoints) {
-        const pos = worldToScreen(p.x + perp.x * laneWidth/2, p.y + perp.y * laneWidth/2);
-        if (firstPoint) { ctx.moveTo(pos.x, pos.y); firstPoint = false; }
-        else ctx.lineTo(pos.x, pos.y);
-      }
-      // Bottom edge (reverse)
-      for (let i = lanePoints.length - 1; i >= 0; i--) {
-        const p = lanePoints[i];
-        const pos = worldToScreen(p.x - perp.x * laneWidth/2, p.y - perp.y * laneWidth/2);
-        ctx.lineTo(pos.x, pos.y);
-      }
-      ctx.closePath();
-      ctx.fill();
-
-      // Lane border
-      ctx.strokeStyle = '#4a5568';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Center line dashes
-      ctx.strokeStyle = '#4a5568';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([15, 10]);
-      ctx.beginPath();
-      const start = worldToScreen(CONFIG.LANE_START.x, CONFIG.LANE_START.y);
-      const end = worldToScreen(CONFIG.LANE_END.x, CONFIG.LANE_END.y);
-      ctx.moveTo(start.x, start.y);
-      ctx.lineTo(end.x, end.y);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      // Center battle marker
+      const center = lerpPt(start, end, 0.5);
+      const centerMark = createSVG('polygon', {
+        points: `${center.x},${center.y - 15} ${center.x + 13},${center.y} ${center.x},${center.y + 15} ${center.x - 13},${center.y}`,
+        fill: 'none',
+        stroke: '#d4a74a',
+        'stroke-width': '2',
+        opacity: '0.4'
+      });
+      laneLayer.appendChild(centerMark);
     }
 
-    function renderJungle() {
-      // Jungle is rendered via depth-sorted trees in collectRenderables
-    }
+    function renderUnits() {
+      unitsLayer.innerHTML = '';
 
-    function renderTree(tree) {
-      const pos = worldToScreen(tree.x, tree.y);
-      const baseSize = tree.size * gameState.camera.zoom;
+      const units = [
+        gameState.blueTeam.nexus, gameState.redTeam.nexus,
+        ...gameState.blueTeam.towers, ...gameState.redTeam.towers,
+        ...gameState.blueTeam.minions, ...gameState.redTeam.minions,
+        ...gameState.blueTeam.champions, ...gameState.redTeam.champions,
+      ].filter(u => u && !u.dead);
 
-      // Culling
-      if (pos.x < -100 || pos.x > canvas.width + 100 ||
-          pos.y < -100 || pos.y > canvas.height + 100) return;
+      units.sort((a, b) => a.y - b.y);
 
-      const height = baseSize * 1.5;
+      units.forEach(u => {
+        if (u.type === 'nexus') renderNexus(u);
+        else if (u.type === 'tower') renderTower(u);
+        else if (u.type === 'minion') renderMinion(u);
+        else if (u.type === 'champion') renderChampion(u);
+      });
 
-      // Shadow (isometric ellipse)
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y + baseSize * 0.1, baseSize * 0.5, baseSize * 0.25, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Trunk
-      ctx.fillStyle = '#4a3728';
-      ctx.beginPath();
-      ctx.moveTo(pos.x - baseSize * 0.1, pos.y);
-      ctx.lineTo(pos.x - baseSize * 0.08, pos.y - height * 0.4);
-      ctx.lineTo(pos.x + baseSize * 0.08, pos.y - height * 0.4);
-      ctx.lineTo(pos.x + baseSize * 0.1, pos.y);
-      ctx.fill();
-
-      // Foliage layers (bottom to top for depth)
-      const foliageColors = ['#1a472a', '#228b22', '#2d5a3a'];
-
-      // Bottom layer
-      ctx.fillStyle = foliageColors[0];
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y - height * 0.45, baseSize * 0.6, baseSize * 0.35, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Middle layer
-      ctx.fillStyle = foliageColors[1];
-      ctx.beginPath();
-      ctx.ellipse(pos.x - baseSize * 0.1, pos.y - height * 0.6, baseSize * 0.45, baseSize * 0.28, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Top layer
-      ctx.fillStyle = foliageColors[2];
-      ctx.beginPath();
-      ctx.ellipse(pos.x + baseSize * 0.05, pos.y - height * 0.75, baseSize * 0.3, baseSize * 0.2, 0, 0, Math.PI * 2);
-      ctx.fill();
+      [...gameState.blueTeam.champions, ...gameState.redTeam.champions]
+        .filter(c => c.dead)
+        .forEach(renderDeadChamp);
     }
 
     function renderNexus(nexus) {
-      const pos = worldToScreen(nexus.x, nexus.y);
-      const size = 100 * gameState.camera.zoom;
-      const height = size * 0.8;
+      const { x, y } = nexus;
+      const g = createSVG('g', { transform: `translate(${x}, ${y})` });
+      const col = COLORS[nexus.team];
 
-      const teamColor = nexus.team === 'blue' ?
-        { dark: '#1a365d', mid: '#2b6cb0', light: '#4299e1', glow: '#63b3ed' } :
-        { dark: '#742a2a', mid: '#c53030', light: '#fc8181', glow: '#feb2b2' };
+      // Stone platform base
+      const platform = createSVG('polygon', {
+        points: '-50,25 0,-15 50,25 0,65',
+        fill: COLORS.stone.dark,
+        stroke: COLORS.stone.mid,
+        'stroke-width': '2'
+      });
+      g.appendChild(platform);
+
+      // Platform detail
+      const platformInner = createSVG('polygon', {
+        points: '-35,25 0,-5 35,25 0,55',
+        fill: COLORS.stone.mid,
+        opacity: '0.5'
+      });
+      g.appendChild(platformInner);
+
+      // Crystal monument - left face
+      const leftFace = createSVG('polygon', {
+        points: '0,-15 0,-75 -25,-50 -25,10',
+        fill: col.mid
+      });
+      g.appendChild(leftFace);
+
+      // Crystal monument - right face
+      const rightFace = createSVG('polygon', {
+        points: '0,-15 0,-75 25,-50 25,10',
+        fill: col.light
+      });
+      g.appendChild(rightFace);
+
+      // Crystal top
+      const crystalTop = createSVG('polygon', {
+        points: '-25,-50 0,-75 25,-50 0,-25',
+        fill: col.light,
+        opacity: '0.8'
+      });
+      g.appendChild(crystalTop);
 
       // Glow effect
-      const gradient = ctx.createRadialGradient(pos.x, pos.y - height/2, 0, pos.x, pos.y - height/2, size * 1.5);
-      gradient.addColorStop(0, teamColor.glow + '40');
-      gradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y - height/2, size * 1.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Base platform (isometric diamond)
-      ctx.fillStyle = teamColor.dark;
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y - size * 0.3);
-      ctx.lineTo(pos.x + size * 0.8, pos.y);
-      ctx.lineTo(pos.x, pos.y + size * 0.3);
-      ctx.lineTo(pos.x - size * 0.8, pos.y);
-      ctx.closePath();
-      ctx.fill();
-
-      // Crystal structure (3D hexagonal prism)
-      // Left face
-      ctx.fillStyle = teamColor.dark;
-      ctx.beginPath();
-      ctx.moveTo(pos.x - size * 0.3, pos.y);
-      ctx.lineTo(pos.x - size * 0.3, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - height - size * 0.2);
-      ctx.lineTo(pos.x, pos.y - size * 0.15);
-      ctx.closePath();
-      ctx.fill();
-
-      // Right face
-      ctx.fillStyle = teamColor.mid;
-      ctx.beginPath();
-      ctx.moveTo(pos.x + size * 0.3, pos.y);
-      ctx.lineTo(pos.x + size * 0.3, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - height - size * 0.2);
-      ctx.lineTo(pos.x, pos.y - size * 0.15);
-      ctx.closePath();
-      ctx.fill();
-
-      // Top face
-      ctx.fillStyle = teamColor.light;
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y - height - size * 0.2);
-      ctx.lineTo(pos.x - size * 0.3, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - height + size * 0.1);
-      ctx.lineTo(pos.x + size * 0.3, pos.y - height);
-      ctx.closePath();
-      ctx.fill();
+      const glow = createSVG('ellipse', {
+        cx: '0', cy: '30',
+        rx: '40', ry: '20',
+        fill: col.glow,
+        opacity: '0.15',
+        filter: `url(#${nexus.team}Glow)`
+      });
+      g.appendChild(glow);
 
       // Health bar
-      renderHealthBar(pos.x, pos.y - height - size * 0.5, nexus.hp, nexus.maxHp, size * 1.5);
+      renderHealthBar(g, 0, -90, nexus.hp, nexus.maxHp, 60, col.mid);
+
+      unitsLayer.appendChild(g);
     }
 
     function renderTower(tower) {
-      const pos = worldToScreen(tower.x, tower.y);
-      const size = 50 * gameState.camera.zoom;
-      const height = size * 2;
-
-      const teamColor = tower.team === 'blue' ?
-        { dark: '#1a365d', mid: '#2b6cb0', light: '#4299e1' } :
-        { dark: '#742a2a', mid: '#c53030', light: '#fc8181' };
-
-      // Range indicator (isometric circle = ellipse)
-      if (tower.target) {
-        ctx.strokeStyle = tower.team === 'blue' ? '#4299e130' : '#fc818130';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        const rangeScale = CONFIG.TOWER_RANGE * gameState.camera.zoom;
-        ctx.ellipse(pos.x, pos.y, rangeScale * ISO_COS, rangeScale * ISO_SIN, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      const { x, y } = tower;
+      const g = createSVG('g', { transform: `translate(${x}, ${y})`, filter: 'url(#shadow)' });
+      const col = COLORS[tower.team];
 
       // Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y + size * 0.2, size * 0.6, size * 0.3, 0, 0, Math.PI * 2);
-      ctx.fill();
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '18', rx: '20', ry: '10',
+        fill: '#000', opacity: '0.4'
+      }));
 
-      // Base (isometric)
-      ctx.fillStyle = teamColor.dark;
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y - size * 0.2);
-      ctx.lineTo(pos.x + size * 0.5, pos.y);
-      ctx.lineTo(pos.x, pos.y + size * 0.2);
-      ctx.lineTo(pos.x - size * 0.5, pos.y);
-      ctx.closePath();
-      ctx.fill();
+      // Stone base
+      g.appendChild(createSVG('polygon', {
+        points: '-18,15 0,0 18,15 0,30',
+        fill: COLORS.stone.dark,
+        stroke: COLORS.stone.mid,
+        'stroke-width': '1'
+      }));
 
-      // Tower body (left side)
-      ctx.fillStyle = teamColor.dark;
-      ctx.beginPath();
-      ctx.moveTo(pos.x - size * 0.2, pos.y);
-      ctx.lineTo(pos.x - size * 0.15, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - size * 0.1);
-      ctx.closePath();
-      ctx.fill();
+      // Tower body - stone pillar
+      g.appendChild(createSVG('rect', {
+        x: '-12', y: '-55', width: '24', height: '65',
+        fill: COLORS.stone.mid,
+        stroke: COLORS.stone.dark,
+        'stroke-width': '1',
+        rx: '2'
+      }));
 
-      // Tower body (right side)
-      ctx.fillStyle = teamColor.mid;
-      ctx.beginPath();
-      ctx.moveTo(pos.x + size * 0.2, pos.y);
-      ctx.lineTo(pos.x + size * 0.15, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - height);
-      ctx.lineTo(pos.x, pos.y - size * 0.1);
-      ctx.closePath();
-      ctx.fill();
+      // Tower battlements
+      for (let i = -1; i <= 1; i++) {
+        g.appendChild(createSVG('rect', {
+          x: -15 + i * 10, y: '-65', width: '8', height: '12',
+          fill: COLORS.stone.light
+        }));
+      }
 
-      // Tower top (pointed)
-      ctx.fillStyle = teamColor.light;
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y - height - size * 0.4);
-      ctx.lineTo(pos.x - size * 0.2, pos.y - height);
-      ctx.lineTo(pos.x + size * 0.2, pos.y - height);
-      ctx.closePath();
-      ctx.fill();
+      // Colored crystal on top
+      g.appendChild(createSVG('polygon', {
+        points: '0,-75 -8,-60 8,-60',
+        fill: col.light,
+        filter: `url(#${tower.team}Glow)`
+      }));
 
       // Attack beam
       if (tower.target && !tower.target.dead) {
-        const targetPos = worldToScreen(tower.target.x, tower.target.y);
-        ctx.strokeStyle = tower.team === 'blue' ? '#4299e1' : '#fc8181';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y - height);
-        ctx.lineTo(targetPos.x, targetPos.y - 20 * gameState.camera.zoom);
-        ctx.stroke();
-
-        // Impact effect
-        ctx.fillStyle = tower.team === 'blue' ? '#63b3ed' : '#feb2b2';
-        ctx.beginPath();
-        ctx.arc(targetPos.x, targetPos.y - 20 * gameState.camera.zoom, 8, 0, Math.PI * 2);
-        ctx.fill();
+        g.appendChild(createSVG('line', {
+          x1: '0', y1: '-65',
+          x2: tower.target.x - x, y2: tower.target.y - y - 15,
+          stroke: col.glow,
+          'stroke-width': '3',
+          opacity: '0.7'
+        }));
       }
 
-      // Health bar
-      renderHealthBar(pos.x, pos.y - height - size * 0.6, tower.hp, tower.maxHp, size * 1.8);
+      renderHealthBar(g, 0, -85, tower.hp, tower.maxHp, 45);
+
+      unitsLayer.appendChild(g);
     }
 
     function renderMinion(minion) {
-      const pos = worldToScreen(minion.x, minion.y);
-      const size = 18 * gameState.camera.zoom;
-
-      const teamColor = minion.team === 'blue' ?
-        { body: '#63b3ed', outline: '#2b6cb0' } :
-        { body: '#fc8181', outline: '#c53030' };
+      const { x, y } = minion;
+      const g = createSVG('g', { transform: `translate(${x}, ${y})` });
+      const col = COLORS[minion.team];
 
       // Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y + size * 0.3, size * 0.6, size * 0.3, 0, 0, Math.PI * 2);
-      ctx.fill();
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '8', rx: '8', ry: '4',
+        fill: '#000', opacity: '0.3'
+      }));
 
-      // Body (isometric blob)
-      ctx.fillStyle = teamColor.body;
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y - size * 0.3, size * 0.7, size * 0.5, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // Body - armored creature
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '0', rx: '10', ry: '8',
+        fill: col.mid
+      }));
 
-      // Outline
-      ctx.strokeStyle = teamColor.outline;
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      // Armor highlight
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '-2', rx: '8', ry: '5',
+        fill: col.light,
+        opacity: '0.6'
+      }));
 
-      // Eyes (simple dots)
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(pos.x - size * 0.2, pos.y - size * 0.4, size * 0.12, 0, Math.PI * 2);
-      ctx.arc(pos.x + size * 0.2, pos.y - size * 0.4, size * 0.12, 0, Math.PI * 2);
-      ctx.fill();
+      // Eyes/visor
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '-3', rx: '4', ry: '2',
+        fill: col.dark,
+        opacity: '0.8'
+      }));
 
-      // Health bar when damaged
       if (minion.hp < minion.maxHp) {
-        renderHealthBar(pos.x, pos.y - size * 1.2, minion.hp, minion.maxHp, size * 2, true);
+        renderHealthBar(g, 0, -16, minion.hp, minion.maxHp, 18);
       }
+
+      unitsLayer.appendChild(g);
     }
 
     function renderChampion(champ) {
-      const pos = worldToScreen(champ.x, champ.y);
-      const size = 32 * gameState.camera.zoom;
-
-      const teamColor = champ.team === 'blue' ?
-        { dark: '#1a365d', mid: '#2b6cb0', light: '#4299e1', glow: '#63b3ed' } :
-        { dark: '#742a2a', mid: '#c53030', light: '#fc8181', glow: '#feb2b2' };
-
-      if (champ.dead) {
-        // Death marker
-        ctx.fillStyle = 'rgba(100,100,100,0.4)';
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y, size * 0.5, size * 0.25, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Skull or X marker
-        ctx.strokeStyle = '#666';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(pos.x - size * 0.2, pos.y - size * 0.1);
-        ctx.lineTo(pos.x + size * 0.2, pos.y + size * 0.1);
-        ctx.moveTo(pos.x + size * 0.2, pos.y - size * 0.1);
-        ctx.lineTo(pos.x - size * 0.2, pos.y + size * 0.1);
-        ctx.stroke();
-
-        // Respawn timer
-        if (champ.respawnTime > 0) {
-          ctx.fillStyle = '#fff';
-          ctx.font = `bold ${14 * gameState.camera.zoom / 0.08}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.fillText(Math.ceil(champ.respawnTime) + 's', pos.x, pos.y - size * 0.5);
-        }
-        return;
-      }
-
-      // Selection ring
-      if (gameState.selectedUnit === champ) {
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y + size * 0.1, size * 1.1, size * 0.55, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
+      const { x, y } = champ;
+      const g = createSVG('g', { transform: `translate(${x}, ${y})`, filter: 'url(#shadow)' });
+      const col = COLORS[champ.team];
 
       // Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y + size * 0.15, size * 0.7, size * 0.35, 0, 0, Math.PI * 2);
-      ctx.fill();
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '20', rx: '22', ry: '11',
+        fill: '#000', opacity: '0.5'
+      }));
 
-      // Body (isometric capsule shape)
-      const bodyHeight = size * 1.2;
+      // Selection ring
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '14', rx: '25', ry: '12',
+        fill: 'none',
+        stroke: col.glow,
+        'stroke-width': '2',
+        opacity: '0.5'
+      }));
 
-      // Body base
-      ctx.fillStyle = teamColor.mid;
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y - size * 0.1, size * 0.5, size * 0.35, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // Body armor
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '0', rx: '18', ry: '16',
+        fill: `url(#${champ.team}Grad)`,
+        stroke: col.dark,
+        'stroke-width': '1'
+      }));
 
-      // Body middle
-      ctx.fillStyle = teamColor.mid;
-      ctx.fillRect(pos.x - size * 0.5, pos.y - bodyHeight * 0.6, size, bodyHeight * 0.5);
+      // Armor detail
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '-4', rx: '14', ry: '12',
+        fill: col.mid,
+        opacity: '0.4'
+      }));
 
-      // Head
-      ctx.fillStyle = teamColor.light;
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y - bodyHeight * 0.7, size * 0.35, 0, Math.PI * 2);
-      ctx.fill();
+      // Head/Helm
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '-20', rx: '12', ry: '10',
+        fill: col.light,
+        stroke: col.mid,
+        'stroke-width': '1'
+      }));
 
-      // Champion initial on body
-      ctx.fillStyle = '#fff';
-      ctx.font = `bold ${size * 0.6}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(champ.name[0], pos.x, pos.y - size * 0.3);
+      // Visor/Face
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '-18', rx: '6', ry: '4',
+        fill: col.dark,
+        opacity: '0.7'
+      }));
+
+      // Name plate
+      g.appendChild(createSVG('rect', {
+        x: '-35', y: '-52', width: '70', height: '16',
+        fill: 'rgba(13,11,9,0.85)',
+        rx: '2'
+      }));
+
+      const label = createSVG('text', {
+        x: '0', y: '-40',
+        'text-anchor': 'middle',
+        fill: '#d4c4a8',
+        'font-size': '11',
+        'font-family': 'inherit'
+      });
+      label.textContent = `${champ.name} Lv${champ.level}`;
+      g.appendChild(label);
+
+      renderHealthBar(g, 0, -58, champ.hp, champ.maxHp, 50);
 
       // Level badge
-      const badgeX = pos.x + size * 0.6;
-      const badgeY = pos.y - size * 0.2;
-      ctx.fillStyle = '#1a202c';
-      ctx.beginPath();
-      ctx.arc(badgeX, badgeY, size * 0.28, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#f6e05e';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = '#f6e05e';
-      ctx.font = `bold ${size * 0.3}px sans-serif`;
-      ctx.fillText(champ.level, badgeX, badgeY);
+      g.appendChild(createSVG('circle', {
+        cx: '22', cy: '-35', r: '10',
+        fill: '#0d0b09',
+        stroke: COLORS.gold,
+        'stroke-width': '1'
+      }));
 
-      // Health bar
-      renderHealthBar(pos.x, pos.y - bodyHeight - size * 0.2, champ.hp, champ.maxHp, size * 2.2);
+      const lvlText = createSVG('text', {
+        x: '22', y: '-31',
+        'text-anchor': 'middle',
+        fill: COLORS.gold,
+        'font-size': '10',
+        'font-weight': 'bold'
+      });
+      lvlText.textContent = champ.level;
+      g.appendChild(lvlText);
 
-      // Mana bar (smaller, below health)
-      renderManaBar(pos.x, pos.y - bodyHeight - size * 0.05, champ.mana, champ.maxMana, size * 2.2);
+      unitsLayer.appendChild(g);
     }
 
-    function renderHealthBar(x, y, hp, maxHp, width, small = false) {
-      const height = small ? 4 : 6;
-      const hpPercent = Math.max(0, hp / maxHp);
+    function renderDeadChamp(champ) {
+      const { x, y } = champ;
+      const g = createSVG('g', { transform: `translate(${x}, ${y})`, opacity: '0.35' });
 
-      // Background
-      ctx.fillStyle = '#1a202c';
-      ctx.fillRect(x - width / 2, y, width, height);
+      g.appendChild(createSVG('ellipse', {
+        cx: '0', cy: '0', rx: '18', ry: '10',
+        fill: '#3a3530',
+        stroke: '#5a5550',
+        'stroke-width': '1',
+        'stroke-dasharray': '4'
+      }));
 
-      // Health
-      let color = '#48bb78'; // green
-      if (hpPercent < 0.3) color = '#fc8181'; // red
-      else if (hpPercent < 0.6) color = '#f6e05e'; // yellow
+      const letter = createSVG('text', {
+        x: '0', y: '5',
+        'text-anchor': 'middle',
+        fill: '#8a7a6a',
+        'font-size': '12'
+      });
+      letter.textContent = champ.name[0];
+      g.appendChild(letter);
 
-      ctx.fillStyle = color;
-      ctx.fillRect(x - width / 2 + 1, y + 1, (width - 2) * hpPercent, height - 2);
+      if (champ.respawnTime > 0) {
+        const timer = createSVG('text', {
+          x: '0', y: '28',
+          'text-anchor': 'middle',
+          fill: '#5a4a3a',
+          'font-size': '11'
+        });
+        timer.textContent = `${Math.ceil(champ.respawnTime)}s`;
+        g.appendChild(timer);
+      }
 
-      // Border
-      ctx.strokeStyle = '#2d3748';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x - width / 2, y, width, height);
+      unitsLayer.appendChild(g);
     }
 
-    function renderManaBar(x, y, mana, maxMana, width) {
-      const height = 3;
-      const manaPercent = Math.max(0, mana / maxMana);
+    function renderHealthBar(parent, x, y, hp, maxHp, width, color = COLORS.health) {
+      const pct = Math.max(0, hp / maxHp);
 
-      ctx.fillStyle = '#1a202c';
-      ctx.fillRect(x - width / 2, y, width, height);
+      parent.appendChild(createSVG('rect', {
+        x: x - width / 2, y: y,
+        width: width, height: '6',
+        fill: '#1a1815',
+        stroke: '#3d3530',
+        'stroke-width': '1',
+        rx: '2'
+      }));
 
-      ctx.fillStyle = '#4299e1';
-      ctx.fillRect(x - width / 2 + 1, y + 1, (width - 2) * manaPercent, height - 2);
+      let fillColor = color;
+      if (color === COLORS.health) {
+        if (pct < 0.3) fillColor = '#8b3030';
+        else if (pct < 0.6) fillColor = '#8b6930';
+      }
+
+      parent.appendChild(createSVG('rect', {
+        x: x - width / 2 + 1, y: y + 1,
+        width: Math.max(0, (width - 2) * pct), height: '4',
+        fill: fillColor,
+        rx: '1'
+      }));
     }
 
     function renderMinimap() {
-      const w = minimapCanvas.width;
-      const h = minimapCanvas.height;
+      minimapSvg.innerHTML = '';
 
-      // Background
-      minimapCtx.fillStyle = '#1a202c';
-      minimapCtx.fillRect(0, 0, w, h);
+      minimapSvg.appendChild(createSVG('rect', {
+        width: '220', height: '130',
+        fill: '#0d0b09'
+      }));
 
-      // The minimap shows an isometric view rotated so the lane goes diagonal
-      // Transform world coords to minimap coords (isometric projection)
-      function minimapPos(worldX, worldY) {
-        // Normalize to 0-1 range
-        const nx = worldX / CONFIG.MAP_WIDTH;
-        const ny = worldY / CONFIG.MAP_HEIGHT;
+      const scaleX = 220 / CONFIG.WORLD_W;
+      const scaleY = 130 / CONFIG.WORLD_H;
 
-        // Apply isometric transform for minimap
-        const isoX = (nx - ny) * 0.5 + 0.5;
-        const isoY = (nx + ny) * 0.35 + 0.15;
+      // Ground
+      const { cx, cy, width, height } = CONFIG.GROUND;
+      minimapSvg.appendChild(createSVG('polygon', {
+        points: `${cx * scaleX},${(cy - height/2) * scaleY} ${(cx + width/2) * scaleX},${cy * scaleY} ${cx * scaleX},${(cy + height/2) * scaleY} ${(cx - width/2) * scaleX},${cy * scaleY}`,
+        fill: '#1a1815',
+        stroke: '#2a2520'
+      }));
 
-        return {
-          x: isoX * w,
-          y: isoY * h
-        };
-      }
-
-      // Draw map boundary (diamond shape)
-      minimapCtx.strokeStyle = '#2d3748';
-      minimapCtx.lineWidth = 2;
-      minimapCtx.beginPath();
-      const corners = [
-        minimapPos(0, 0),
-        minimapPos(CONFIG.MAP_WIDTH, 0),
-        minimapPos(CONFIG.MAP_WIDTH, CONFIG.MAP_HEIGHT),
-        minimapPos(0, CONFIG.MAP_HEIGHT),
-      ];
-      minimapCtx.moveTo(corners[0].x, corners[0].y);
-      corners.forEach(c => minimapCtx.lineTo(c.x, c.y));
-      minimapCtx.closePath();
-      minimapCtx.stroke();
+      // Base platforms on minimap
+      [
+        { base: CONFIG.BLUE_BASE, col: COLORS.blue },
+        { base: CONFIG.RED_BASE, col: COLORS.red }
+      ].forEach(({ base, col }) => {
+        const bx = base.x * scaleX;
+        const by = base.y * scaleY;
+        const br = CONFIG.BASE_RADIUS * scaleX;
+        minimapSvg.appendChild(createSVG('polygon', {
+          points: `${bx},${by - br * 0.5} ${bx + br},${by} ${bx},${by + br * 0.5} ${bx - br},${by}`,
+          fill: col.dark,
+          stroke: col.mid,
+          'stroke-width': '1'
+        }));
+      });
 
       // Lane
-      const laneStart = minimapPos(CONFIG.LANE_START.x, CONFIG.LANE_START.y);
-      const laneEnd = minimapPos(CONFIG.LANE_END.x, CONFIG.LANE_END.y);
+      minimapSvg.appendChild(createSVG('line', {
+        x1: CONFIG.LANE_START.x * scaleX, y1: CONFIG.LANE_START.y * scaleY,
+        x2: CONFIG.LANE_END.x * scaleX, y2: CONFIG.LANE_END.y * scaleY,
+        stroke: '#3a3530',
+        'stroke-width': '6',
+        'stroke-linecap': 'round'
+      }));
 
-      minimapCtx.strokeStyle = '#4a5568';
-      minimapCtx.lineWidth = 6;
-      minimapCtx.lineCap = 'round';
-      minimapCtx.beginPath();
-      minimapCtx.moveTo(laneStart.x, laneStart.y);
-      minimapCtx.lineTo(laneEnd.x, laneEnd.y);
-      minimapCtx.stroke();
-
-      // Nexuses
-      const blueNexusPos = minimapPos(CONFIG.BLUE_NEXUS.x, CONFIG.BLUE_NEXUS.y);
-      const redNexusPos = minimapPos(CONFIG.RED_NEXUS.x, CONFIG.RED_NEXUS.y);
-
-      minimapCtx.fillStyle = '#4299e1';
-      minimapCtx.beginPath();
-      minimapCtx.arc(blueNexusPos.x, blueNexusPos.y, 8, 0, Math.PI * 2);
-      minimapCtx.fill();
-
-      minimapCtx.fillStyle = '#fc8181';
-      minimapCtx.beginPath();
-      minimapCtx.arc(redNexusPos.x, redNexusPos.y, 8, 0, Math.PI * 2);
-      minimapCtx.fill();
+      // Nexus (at base centers)
+      [[gameState.blueTeam.nexus, COLORS.blue.light], [gameState.redTeam.nexus, COLORS.red.light]].forEach(([n, c]) => {
+        if (!n) return;
+        const nx = n.x * scaleX, ny = n.y * scaleY;
+        minimapSvg.appendChild(createSVG('polygon', {
+          points: `${nx},${ny - 6} ${nx + 7},${ny + 2} ${nx},${ny + 6} ${nx - 7},${ny + 2}`,
+          fill: c
+        }));
+      });
 
       // Towers
-      [...gameState.blueTeam.towers, ...gameState.redTeam.towers].forEach(tower => {
-        if (tower.dead) return;
-        const pos = minimapPos(tower.x, tower.y);
-        minimapCtx.fillStyle = tower.team === 'blue' ? '#2b6cb0' : '#c53030';
-        minimapCtx.fillRect(pos.x - 4, pos.y - 4, 8, 8);
+      [...gameState.blueTeam.towers, ...gameState.redTeam.towers].forEach(t => {
+        if (t.dead) return;
+        minimapSvg.appendChild(createSVG('rect', {
+          x: t.x * scaleX - 3, y: t.y * scaleY - 5,
+          width: '6', height: '10',
+          fill: COLORS[t.team].mid
+        }));
       });
 
       // Champions
-      [...gameState.blueTeam.champions, ...gameState.redTeam.champions].forEach(champ => {
-        if (champ.dead) return;
-        const pos = minimapPos(champ.x, champ.y);
-        minimapCtx.fillStyle = champ.team === 'blue' ? '#63b3ed' : '#fc8181';
-        minimapCtx.strokeStyle = '#fff';
-        minimapCtx.lineWidth = 1.5;
-        minimapCtx.beginPath();
-        minimapCtx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
-        minimapCtx.fill();
-        minimapCtx.stroke();
+      [...gameState.blueTeam.champions, ...gameState.redTeam.champions].forEach(c => {
+        if (c.dead) return;
+        minimapSvg.appendChild(createSVG('circle', {
+          cx: c.x * scaleX, cy: c.y * scaleY, r: '5',
+          fill: COLORS[c.team].light,
+          stroke: '#d4c4a8',
+          'stroke-width': '1'
+        }));
       });
 
-      // Minions (small dots)
-      [...gameState.blueTeam.minions, ...gameState.redTeam.minions].forEach(minion => {
-        const pos = minimapPos(minion.x, minion.y);
-        minimapCtx.fillStyle = minion.team === 'blue' ? '#90cdf4' : '#feb2b2';
-        minimapCtx.beginPath();
-        minimapCtx.arc(pos.x, pos.y, 2, 0, Math.PI * 2);
-        minimapCtx.fill();
+      // Minions
+      [...gameState.blueTeam.minions, ...gameState.redTeam.minions].forEach(m => {
+        minimapSvg.appendChild(createSVG('circle', {
+          cx: m.x * scaleX, cy: m.y * scaleY, r: '2',
+          fill: COLORS[m.team].mid
+        }));
       });
-
-      // Camera viewport indicator
-      const { camera } = gameState;
-      const vpCenter = minimapPos(camera.x, camera.y);
-
-      minimapCtx.strokeStyle = '#ffffff60';
-      minimapCtx.lineWidth = 1;
-      minimapCtx.beginPath();
-      minimapCtx.arc(vpCenter.x, vpCenter.y, 15, 0, Math.PI * 2);
-      minimapCtx.stroke();
     }
 
-    // ============================================
-    // UI UPDATES
-    // ============================================
-    function updateUI() {
-      // Match time
-      document.getElementById('matchTime').textContent = formatTime(gameState.matchTime);
+    function createSVG(tag, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+      return el;
+    }
 
-      // Scores
+    // =============================================
+    // UI
+    // =============================================
+    function updateUI() {
+      document.getElementById('matchTime').textContent = fmtTime(gameState.matchTime);
       document.getElementById('blueKills').textContent = gameState.blueTeam.kills;
       document.getElementById('redKills').textContent = gameState.redTeam.kills;
 
-      // Stats
-      document.getElementById('blueTowers').textContent = gameState.blueTeam.towers.filter(t => !t.dead).length;
-      document.getElementById('redTowers').textContent = gameState.redTeam.towers.filter(t => !t.dead).length;
-      document.getElementById('blueGold').textContent = formatGold(gameState.blueTeam.gold);
-      document.getElementById('redGold').textContent = formatGold(gameState.redTeam.gold);
-      document.getElementById('blueMinions').textContent = gameState.blueTeam.minionsKilled;
-      document.getElementById('redMinions').textContent = gameState.redTeam.minionsKilled;
-
-      // Champion portraits
-      updateChampionPortraits();
-
-      // Zoom level
-      document.getElementById('zoomLevel').textContent = Math.round(gameState.camera.zoom * 100 / 0.08) + '%';
+      updatePortraits();
+      updateTeamPanels();
     }
 
-    function updateChampionPortraits() {
-      const blueContainer = document.getElementById('blueChampions');
-      const redContainer = document.getElementById('redChampions');
-
-      blueContainer.innerHTML = gameState.blueTeam.champions.map(champ => `
-        <div class="portrait blue ${champ.dead ? 'dead' : ''}">
-          ${champ.name[0]}
-          <span class="level">${champ.level}</span>
-          <div class="hp-bar-container">
-            <div class="hp-bar" style="width: ${(champ.hp / champ.maxHp) * 100}%"></div>
+    function updatePortraits() {
+      ['blue', 'red'].forEach(team => {
+        const container = document.getElementById(team + 'Portraits');
+        const champs = gameState[team + 'Team'].champions;
+        container.innerHTML = champs.map(c => `
+          <div class="portrait ${team} ${c.dead ? 'dead' : ''}">
+            ${c.name[0]}
+            <span class="level">${c.level}</span>
+            <div class="bars">
+              <div class="hp-bar"><div class="fill" style="width:${(c.hp/c.maxHp)*100}%"></div></div>
+              <div class="mp-bar"><div class="fill" style="width:${(c.mana/c.maxMana)*100}%"></div></div>
+            </div>
           </div>
-        </div>
-      `).join('');
-
-      redContainer.innerHTML = gameState.redTeam.champions.map(champ => `
-        <div class="portrait red ${champ.dead ? 'dead' : ''}">
-          ${champ.name[0]}
-          <span class="level">${champ.level}</span>
-          <div class="hp-bar-container">
-            <div class="hp-bar" style="width: ${(champ.hp / champ.maxHp) * 100}%"></div>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      });
     }
 
-    function addKillFeedEntry(killer, victim) {
-      const entry = {
-        killer: killer.name || 'Minion',
-        killerTeam: killer.team,
-        victim: victim.name || 'Minion',
-        victimTeam: victim.team,
-        timestamp: gameState.matchTime,
-      };
-
-      gameState.killFeed.unshift(entry);
-      if (gameState.killFeed.length > 5) gameState.killFeed.pop();
-
-      const killFeed = document.getElementById('killFeed');
-      killFeed.innerHTML = gameState.killFeed.map(e => `
-        <div class="kill-entry ${e.killerTeam}">
-          <span class="killer ${e.killerTeam}">${e.killer}</span>
-          <span class="icon">⚔</span>
-          <span class="victim ${e.victimTeam}">${e.victim}</span>
-        </div>
-      `).join('');
+    function updateTeamPanels() {
+      ['blue', 'red'].forEach(team => {
+        const panel = document.getElementById(team + 'TeamPanel');
+        const champs = gameState[team + 'Team'].champions;
+        panel.innerHTML = champs.map(c => `
+          <div class="champ-row">
+            <div class="champ-icon ${team}">${c.name[0]}</div>
+            <div class="champ-details">
+              <div class="champ-name">${c.name}</div>
+              <div class="champ-level">Level ${c.level}</div>
+              <div class="champ-hp-bar"><div class="fill" style="width:${(c.hp/c.maxHp)*100}%"></div></div>
+            </div>
+          </div>
+        `).join('');
+      });
     }
 
     function addCommentary(text, type = '') {
-      gameState.commentary.unshift({ text, type, timestamp: gameState.matchTime });
-      if (gameState.commentary.length > 10) gameState.commentary.pop();
+      gameState.commentary.unshift({ text, type });
+      if (gameState.commentary.length > 6) gameState.commentary.pop();
 
-      const container = document.getElementById('commentaryLines');
-      container.innerHTML = gameState.commentary.map(c => `
-        <div class="commentary-line ${c.type}">${c.text}</div>
-      `).join('');
+      document.getElementById('commentaryLines').innerHTML = gameState.commentary.map(c =>
+        `<div class="commentary-line ${c.type}">${c.text}</div>`
+      ).join('');
     }
 
-    // ============================================
-    // INPUT HANDLING
-    // ============================================
+    // =============================================
+    // INPUT
+    // =============================================
     function setupInput() {
-      const gameArea = document.getElementById('gameArea');
-
-      // Zoom with scroll
-      gameArea.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
-        gameState.camera.zoom = Math.max(
-          gameState.camera.minZoom,
-          Math.min(gameState.camera.maxZoom, gameState.camera.zoom * zoomDelta)
-        );
-        updateUI();
-      });
-
-      // Pan with drag
-      let isDragging = false;
-      let lastMouseX, lastMouseY;
-
-      gameArea.addEventListener('mousedown', (e) => {
-        if (e.button === 0) {
-          isDragging = true;
-          lastMouseX = e.clientX;
-          lastMouseY = e.clientY;
-        }
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          const dx = e.clientX - lastMouseX;
-          const dy = e.clientY - lastMouseY;
-          gameState.camera.x -= dx / gameState.camera.zoom;
-          gameState.camera.y -= dy / gameState.camera.zoom;
-          lastMouseX = e.clientX;
-          lastMouseY = e.clientY;
-        }
-      });
-
-      window.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
-
-      // Click to select
-      canvas.addEventListener('click', (e) => {
-        if (isDragging) return;
-
-        const rect = canvas.getBoundingClientRect();
-        const screenX = e.clientX - rect.left;
-        const screenY = e.clientY - rect.top;
-        const world = screenToWorld(screenX, screenY);
-
-        // Find clicked unit
-        const allUnits = [
-          ...gameState.blueTeam.champions,
-          ...gameState.redTeam.champions,
-        ];
-
-        let clicked = null;
-        let closestDist = 50 / gameState.camera.zoom;
-
-        for (const unit of allUnits) {
-          if (unit.dead) continue;
-          const d = distance(world, unit);
-          if (d < closestDist) {
-            clicked = unit;
-            closestDist = d;
-          }
-        }
-
-        gameState.selectedUnit = clicked;
-        updateSelectedInfo();
-      });
-
-      // Minimap click to move camera
-      minimapCanvas.addEventListener('click', (e) => {
-        const rect = minimapCanvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / minimapCanvas.width * CONFIG.MAP_WIDTH;
-        const y = (e.clientY - rect.top) / minimapCanvas.height * CONFIG.MAP_HEIGHT;
-        gameState.camera.x = x;
-        gameState.camera.y = y;
-      });
-
-      // Zoom buttons
-      document.getElementById('zoomIn').addEventListener('click', () => {
-        gameState.camera.zoom = Math.min(gameState.camera.maxZoom, gameState.camera.zoom * 1.2);
-        updateUI();
-      });
-
-      document.getElementById('zoomOut').addEventListener('click', () => {
-        gameState.camera.zoom = Math.max(gameState.camera.minZoom, gameState.camera.zoom / 1.2);
-        updateUI();
-      });
-
-      // Demo controls
-      document.getElementById('playPauseBtn').addEventListener('click', (e) => {
+      document.getElementById('playPauseBtn').onclick = e => {
         gameState.running = !gameState.running;
         e.target.textContent = gameState.running ? 'Pause' : 'Play';
         e.target.classList.toggle('active', gameState.running);
-      });
+      };
 
-      document.getElementById('speedBtn').addEventListener('click', (e) => {
+      document.getElementById('speedBtn').onclick = e => {
         const speeds = [1, 2, 4, 0.5];
-        const currentIndex = speeds.indexOf(gameState.speed);
-        gameState.speed = speeds[(currentIndex + 1) % speeds.length];
+        gameState.speed = speeds[(speeds.indexOf(gameState.speed) + 1) % speeds.length];
         e.target.textContent = gameState.speed + 'x';
+      };
+
+      document.getElementById('resetBtn').onclick = () => location.reload();
+
+      document.getElementById('zoomInBtn').onclick = () => {
+        gameState.zoom = Math.min(3, gameState.zoom + 0.2);
+      };
+
+      document.getElementById('zoomOutBtn').onclick = () => {
+        gameState.zoom = Math.max(0.25, gameState.zoom - 0.2);
+      };
+
+      const gameArea = document.getElementById('gameArea');
+
+      // Mouse wheel zoom
+      gameArea.addEventListener('wheel', e => {
+        e.preventDefault();
+        if (e.deltaY < 0) gameState.zoom = Math.min(3, gameState.zoom + 0.1);
+        else gameState.zoom = Math.max(0.25, gameState.zoom - 0.1);
       });
 
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        location.reload();
+      // Mouse drag panning
+      let isDragging = false;
+      let lastMouseX = 0;
+      let lastMouseY = 0;
+
+      gameArea.addEventListener('mousedown', e => {
+        if (e.button === 0) { // Left click
+          isDragging = true;
+          lastMouseX = e.clientX;
+          lastMouseY = e.clientY;
+          gameArea.style.cursor = 'grabbing';
+        }
       });
 
-      // Window resize
-      window.addEventListener('resize', resizeCanvas);
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          const dx = e.clientX - lastMouseX;
+          const dy = e.clientY - lastMouseY;
+
+          // Adjust pan based on zoom level (more zoomed = less pan needed)
+          const panSpeed = 1.5 / gameState.zoom;
+          gameState.panX -= dx * panSpeed;
+          gameState.panY -= dy * panSpeed;
+
+          // Clamp panning to reasonable bounds
+          const maxPan = CONFIG.WORLD_W * 0.5;
+          gameState.panX = Math.max(-maxPan, Math.min(maxPan, gameState.panX));
+          gameState.panY = Math.max(-maxPan, Math.min(maxPan, gameState.panY));
+
+          lastMouseX = e.clientX;
+          lastMouseY = e.clientY;
+        }
+      });
+
+      document.addEventListener('mouseup', e => {
+        if (e.button === 0) {
+          isDragging = false;
+          gameArea.style.cursor = 'grab';
+        }
+      });
+
+      // Set initial cursor
+      gameArea.style.cursor = 'grab';
     }
 
-    function updateSelectedInfo() {
-      const container = document.getElementById('selectedInfo');
-      const unit = gameState.selectedUnit;
-
-      if (!unit) {
-        container.innerHTML = '<div class="stat-row"><span class="stat-label">Click a champion</span></div>';
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="stat-row">
-          <span class="stat-label">Name</span>
-          <span class="stat-value">${unit.name}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Team</span>
-          <span class="stat-value ${unit.team}">${unit.team.toUpperCase()}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">HP</span>
-          <span class="stat-value">${Math.round(unit.hp)}/${unit.maxHp}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Level</span>
-          <span class="stat-value">${unit.level}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Damage</span>
-          <span class="stat-value">${unit.damage}</span>
-        </div>
-      `;
-    }
-
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    resizeCanvas();
+    // =============================================
+    // INIT
+    // =============================================
     setupInput();
     initGame();
     requestAnimationFrame(gameLoop);

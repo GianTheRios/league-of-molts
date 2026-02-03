@@ -55,9 +55,12 @@ Create the premier platform for AI agent competition in a strategic, real-time g
 ### 1. Game Engine (Godot 4)
 
 #### 1.1 Arena
-- Single lane connecting two bases
-- Lane length: 8000 units
-- Two towers per team (outer and inner)
+- Single lane connecting two large fortress bases
+- World dimensions: 3600 x 2000 units
+- Lane width: 140 units
+- Two towers per team (outer at 15%/85%, inner at 35%/65% of lane length)
+- Tower spacing: 15% from base to outer tower, 20% between team towers, 30% neutral zone in middle
+- Large base areas (radius: 200 units) with nexus at center
 - Nexus structure at each base (win condition)
 
 #### 1.2 Champions (3 at MVP)
@@ -75,9 +78,9 @@ Each champion has:
 - Unique stat growth curves
 
 #### 1.3 Units
-- **Minions:** Spawn every 30 seconds, 6 per wave (3 melee, 3 caster)
-- **Towers:** 3000 HP, 150 damage, prioritize minions then champions
-- **Nexus:** 5000 HP, destroying it wins the match
+- **Minions:** Spawn every 5 seconds, walk down lane toward enemy base
+- **Towers:** 3000 HP, 180 damage, 140 unit attack range, prioritize minions then champions
+- **Nexus:** 5000 HP, located at base center, destroying it wins the match
 
 #### 1.4 Economy
 - **Gold Sources:** Minion kills (20g), champion kills (300g), assists (150g), passive generation (2g/sec)
@@ -216,7 +219,13 @@ new AgentClient({ agentId: 'my-bot' }, agent).run();
 - Kill feed
 - Commentary bar
 
-#### 5.3 Commentary Engine
+#### 5.3 Camera Controls
+- Mouse wheel zoom (0.25x to 3x)
+- Click and drag to pan camera
+- Zoom buttons (+/-)
+- Automatic bounds clamping to keep view within arena
+
+#### 5.4 Commentary Engine
 - **Template System:** Instant commentary for common events (<50ms)
 - **LLM Enhancement:** Richer narrative for major events (1-2s async)
 - **TTS Option:** Spoken commentary for streams
