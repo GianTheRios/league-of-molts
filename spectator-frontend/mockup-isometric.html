@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League of Molts - Isometric View</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0b0d;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      display: grid;
+      grid-template-rows: 70px 1fr 100px;
+      grid-template-columns: 1fr 200px;
+      height: 100vh;
+    }
+
+    /* Header spans full width */
+    .header {
+      grid-column: 1 / -1;
+      background: linear-gradient(180deg, rgba(10,11,13,0.95) 0%, rgba(10,11,13,0.8) 100%);
+      border-bottom: 1px solid #1a1c24;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 20px;
+      z-index: 100;
+    }
+
+    .team-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .team-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+
+    .team-label.blue { color: #3498db; }
+    .team-label.red { color: #e74c3c; }
+
+    .champions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .portrait {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      border: 2px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .portrait.blue { border-color: #3498db; background: linear-gradient(135deg, #1a3a5c 0%, #0d1f33 100%); }
+    .portrait.red { border-color: #e74c3c; background: linear-gradient(135deg, #5c1a1a 0%, #330d0d 100%); }
+    .portrait.dead { opacity: 0.4; }
+
+    .portrait .level {
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      background: #0a0b0d;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #f1c40f;
+      border: 1px solid #2a2c35;
+    }
+
+    .portrait .bars {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      right: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .portrait .hp-bar, .portrait .mp-bar {
+      height: 3px;
+      background: #1a1a1a;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .portrait .hp-bar .fill { height: 100%; background: #2ecc71; }
+    .portrait .mp-bar .fill { height: 100%; background: #3498db; }
+
+    .center-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .match-time {
+      font-size: 28px;
+      font-weight: bold;
+      font-family: monospace;
+      color: #f0f0f0;
+    }
+
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .score .blue { color: #5dade2; }
+    .score .red { color: #ec7063; }
+    .score .divider { color: #444; }
+
+    /* Game Area */
+    .game-area {
+      background: linear-gradient(180deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: rgba(10,11,13,0.95);
+      border-left: 1px solid #1a1c24;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .minimap-container {
+      background: #0d1117;
+      border-radius: 6px;
+      padding: 6px;
+      border: 1px solid #1a1c24;
+    }
+
+    .minimap-container svg {
+      display: block;
+      border-radius: 4px;
+    }
+
+    .panel {
+      background: #0d1117;
+      border-radius: 6px;
+      padding: 10px;
+      border: 1px solid #1a1c24;
+    }
+
+    .panel-title {
+      font-size: 10px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 3px 0;
+    }
+
+    .stat-label { color: #888; }
+    .stat-value { color: #fff; }
+    .stat-value.blue { color: #5dade2; }
+    .stat-value.red { color: #ec7063; }
+
+    /* Footer / Commentary */
+    .footer {
+      grid-column: 1 / -1;
+      background: linear-gradient(180deg, rgba(13,17,23,0.95) 0%, rgba(10,11,13,0.98) 100%);
+      border-top: 1px solid #1a1c24;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .commentary-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-bottom: 1px solid #1a1c24;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .commentary-lines {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .commentary-line {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .commentary-line.kill { color: #e74c3c; font-weight: 500; }
+    .commentary-line.objective { color: #f1c40f; font-weight: 500; }
+
+    /* Kill feed */
+    .kill-feed {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 50;
+    }
+
+    .kill-entry {
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 2px solid #5dade2;
+    }
+
+    .kill-entry .killer { color: #5dade2; font-weight: 500; }
+    .kill-entry .victim { color: #ec7063; font-weight: 500; }
+    .kill-entry .icon { font-size: 12px; opacity: 0.7; }
+
+    /* Ability bar overlay */
+    .ability-bar {
+      position: absolute;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.7);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #2a2c35;
+    }
+
+    .ability {
+      width: 40px;
+      height: 40px;
+      background: #1a1c24;
+      border: 2px solid #3498db;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .ability.on-cd {
+      border-color: #444;
+      color: #666;
+    }
+
+    .ability .key {
+      position: absolute;
+      bottom: -8px;
+      font-size: 9px;
+      color: #888;
+    }
+
+    .ability .cd {
+      position: absolute;
+      font-size: 12px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="team-section">
+        <div class="team-label blue">BLUE</div>
+        <div class="champions">
+          <div class="portrait blue">I<span class="level">7</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:85%"></div></div><div class="mp-bar"><div class="fill" style="width:60%"></div></div></div></div>
+          <div class="portrait blue">V<span class="level">6</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:55%"></div></div><div class="mp-bar"><div class="fill" style="width:40%"></div></div></div></div>
+          <div class="portrait blue dead">S<span class="level">5</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:0%"></div></div><div class="mp-bar"><div class="fill" style="width:100%"></div></div></div></div>
+        </div>
+      </div>
+
+      <div class="center-section">
+        <div class="score">
+          <span class="blue">5</span>
+          <span class="divider">-</span>
+          <span class="red">3</span>
+        </div>
+        <div class="match-time">12:34</div>
+      </div>
+
+      <div class="team-section">
+        <div class="champions">
+          <div class="portrait red">I<span class="level">6</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:40%"></div></div><div class="mp-bar"><div class="fill" style="width:70%"></div></div></div></div>
+          <div class="portrait red">V<span class="level">7</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:90%"></div></div><div class="mp-bar"><div class="fill" style="width:30%"></div></div></div></div>
+          <div class="portrait red">S<span class="level">6</span><div class="bars"><div class="hp-bar"><div class="fill" style="width:65%"></div></div><div class="mp-bar"><div class="fill" style="width:80%"></div></div></div></div>
+        </div>
+        <div class="team-label red">RED</div>
+      </div>
+    </header>
+
+    <!-- Game Area - Isometric View -->
+    <div class="game-area">
+      <svg class="game-canvas" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <!-- Gradients -->
+          <linearGradient id="groundGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a2332"/>
+            <stop offset="50%" style="stop-color:#0f1620"/>
+            <stop offset="100%" style="stop-color:#1a2332"/>
+          </linearGradient>
+
+          <linearGradient id="laneGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2a3a4a"/>
+            <stop offset="50%" style="stop-color:#3a4a5a"/>
+            <stop offset="100%" style="stop-color:#2a3a4a"/>
+          </linearGradient>
+
+          <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#5dade2"/>
+            <stop offset="100%" style="stop-color:#2980b9"/>
+          </linearGradient>
+
+          <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#ec7063"/>
+            <stop offset="100%" style="stop-color:#c0392b"/>
+          </linearGradient>
+
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <filter id="shadow">
+            <feDropShadow dx="2" dy="4" stdDeviation="2" flood-opacity="0.5"/>
+          </filter>
+        </defs>
+
+        <!-- Ground plane (isometric) -->
+        <polygon points="500,50 950,300 500,550 50,300" fill="url(#groundGrad)" opacity="0.8"/>
+
+        <!-- Lane path (diagonal across isometric plane) -->
+        <polygon points="120,280 200,320 800,320 880,280 800,240 200,240" fill="url(#laneGrad)" opacity="0.9"/>
+
+        <!-- Grid lines for depth -->
+        <g stroke="#2a3a4a" stroke-width="0.5" opacity="0.3">
+          <line x1="200" y1="240" x2="200" y2="320"/>
+          <line x1="300" y1="240" x2="300" y2="320"/>
+          <line x1="400" y1="240" x2="400" y2="320"/>
+          <line x1="500" y1="240" x2="500" y2="320"/>
+          <line x1="600" y1="240" x2="600" y2="320"/>
+          <line x1="700" y1="240" x2="700" y2="320"/>
+          <line x1="800" y1="240" x2="800" y2="320"/>
+        </g>
+
+        <!-- Blue Base (left side, isometric) -->
+        <g transform="translate(140, 260)">
+          <!-- Base platform -->
+          <polygon points="0,20 40,-10 80,20 40,50" fill="#1a3a5c" stroke="#3498db" stroke-width="1"/>
+          <!-- Nexus structure -->
+          <polygon points="40,-10 40,-50 20,-35 20,5" fill="#2980b9"/>
+          <polygon points="40,-10 40,-50 60,-35 60,5" fill="#1a5276"/>
+          <polygon points="20,-35 40,-50 60,-35 40,-20" fill="#5dade2"/>
+          <!-- Glow -->
+          <ellipse cx="40" cy="25" rx="30" ry="15" fill="#3498db" opacity="0.2"/>
+        </g>
+
+        <!-- Red Base (right side, isometric) -->
+        <g transform="translate(780, 260)">
+          <!-- Base platform -->
+          <polygon points="0,20 40,-10 80,20 40,50" fill="#5c1a1a" stroke="#e74c3c" stroke-width="1"/>
+          <!-- Nexus structure -->
+          <polygon points="40,-10 40,-50 20,-35 20,5" fill="#c0392b"/>
+          <polygon points="40,-10 40,-50 60,-35 60,5" fill="#922b21"/>
+          <polygon points="20,-35 40,-50 60,-35 40,-20" fill="#ec7063"/>
+          <!-- Glow -->
+          <ellipse cx="40" cy="25" rx="30" ry="15" fill="#e74c3c" opacity="0.2"/>
+        </g>
+
+        <!-- Blue Towers (isometric) -->
+        <g transform="translate(240, 270)">
+          <ellipse cx="0" cy="15" rx="12" ry="6" fill="#000" opacity="0.3"/>
+          <rect x="-8" y="-35" width="16" height="50" fill="#2980b9" rx="2"/>
+          <polygon points="-12,-35 0,-50 12,-35" fill="#5dade2"/>
+          <ellipse cx="0" cy="-35" rx="10" ry="5" fill="#3498db"/>
+        </g>
+        <g transform="translate(320, 275)">
+          <ellipse cx="0" cy="15" rx="12" ry="6" fill="#000" opacity="0.3"/>
+          <rect x="-8" y="-35" width="16" height="50" fill="#2980b9" rx="2"/>
+          <polygon points="-12,-35 0,-50 12,-35" fill="#5dade2"/>
+          <ellipse cx="0" cy="-35" rx="10" ry="5" fill="#3498db"/>
+        </g>
+
+        <!-- Red Towers (isometric) -->
+        <g transform="translate(680, 275)">
+          <ellipse cx="0" cy="15" rx="12" ry="6" fill="#000" opacity="0.3"/>
+          <rect x="-8" y="-35" width="16" height="50" fill="#c0392b" rx="2"/>
+          <polygon points="-12,-35 0,-50 12,-35" fill="#ec7063"/>
+          <ellipse cx="0" cy="-35" rx="10" ry="5" fill="#e74c3c"/>
+        </g>
+        <g transform="translate(760, 270)" opacity="0.4">
+          <!-- Destroyed tower -->
+          <ellipse cx="0" cy="15" rx="12" ry="6" fill="#000" opacity="0.3"/>
+          <rect x="-8" y="-15" width="16" height="30" fill="#5c1a1a" rx="2"/>
+          <polygon points="-6,-15 0,-22 6,-15" fill="#7c2a2a"/>
+        </g>
+
+        <!-- Blue Minion Wave -->
+        <g transform="translate(380, 280)">
+          <!-- Melee minions (larger) -->
+          <g transform="translate(0, 0)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#85c1e9"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#aed6f1"/>
+          </g>
+          <g transform="translate(15, 8)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#85c1e9"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#aed6f1"/>
+          </g>
+          <g transform="translate(8, -8)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#85c1e9"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#aed6f1"/>
+          </g>
+          <!-- Caster minions (smaller) -->
+          <g transform="translate(-20, 5)">
+            <ellipse cx="0" cy="6" rx="4" ry="2" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#d4e6f1"/>
+          </g>
+          <g transform="translate(-15, -5)">
+            <ellipse cx="0" cy="6" rx="4" ry="2" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#d4e6f1"/>
+          </g>
+        </g>
+
+        <!-- Red Minion Wave -->
+        <g transform="translate(580, 280)">
+          <g transform="translate(0, 0)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#f1948a"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#f5b7b1"/>
+          </g>
+          <g transform="translate(-15, 8)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#f1948a"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#f5b7b1"/>
+          </g>
+          <g transform="translate(-8, -8)">
+            <ellipse cx="0" cy="8" rx="6" ry="3" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="8" ry="6" fill="#f1948a"/>
+            <ellipse cx="0" cy="-3" rx="6" ry="4" fill="#f5b7b1"/>
+          </g>
+          <g transform="translate(20, 5)">
+            <ellipse cx="0" cy="6" rx="4" ry="2" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#fadbd8"/>
+          </g>
+          <g transform="translate(15, -5)">
+            <ellipse cx="0" cy="6" rx="4" ry="2" fill="#000" opacity="0.3"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#fadbd8"/>
+          </g>
+        </g>
+
+        <!-- CHAMPIONS -->
+
+        <!-- Blue Ironclad (Tank - Front) -->
+        <g transform="translate(460, 275)" filter="url(#shadow)">
+          <ellipse cx="0" cy="20" rx="16" ry="8" fill="#000" opacity="0.4"/>
+          <!-- Body -->
+          <ellipse cx="0" cy="0" rx="18" ry="14" fill="url(#blueGrad)"/>
+          <!-- Armor details -->
+          <ellipse cx="0" cy="-5" rx="14" ry="10" fill="#3498db" opacity="0.5"/>
+          <!-- Head -->
+          <ellipse cx="0" cy="-18" rx="10" ry="8" fill="#5dade2"/>
+          <ellipse cx="0" cy="-20" rx="8" ry="6" fill="#85c1e9"/>
+          <!-- Shield -->
+          <ellipse cx="-14" cy="0" rx="6" ry="10" fill="#2980b9"/>
+          <!-- Health bar -->
+          <rect x="-20" y="-38" width="40" height="5" fill="#1a1a1a" rx="2"/>
+          <rect x="-20" y="-38" width="34" height="5" fill="#2ecc71" rx="2"/>
+          <!-- Level indicator -->
+          <circle cx="16" cy="-30" r="8" fill="#0a0b0d" stroke="#f1c40f" stroke-width="1"/>
+          <text x="16" y="-27" text-anchor="middle" fill="#f1c40f" font-size="9" font-weight="bold">7</text>
+        </g>
+
+        <!-- Blue Voltaic (Mage - Back) -->
+        <g transform="translate(420, 260)" filter="url(#shadow)">
+          <ellipse cx="0" cy="18" rx="12" ry="6" fill="#000" opacity="0.4"/>
+          <!-- Robe body -->
+          <path d="M-12,15 Q-14,-5 0,-15 Q14,-5 12,15 Z" fill="url(#blueGrad)"/>
+          <!-- Inner robe -->
+          <path d="M-8,12 Q-10,-3 0,-12 Q10,-3 8,12 Z" fill="#3498db" opacity="0.6"/>
+          <!-- Head -->
+          <ellipse cx="0" cy="-18" rx="8" ry="7" fill="#5dade2"/>
+          <!-- Staff -->
+          <line x1="12" y1="10" x2="18" y2="-25" stroke="#8e44ad" stroke-width="3"/>
+          <circle cx="18" cy="-28" r="5" fill="#9b59b6" filter="url(#glow)"/>
+          <!-- Health bar -->
+          <rect x="-16" y="-35" width="32" height="4" fill="#1a1a1a" rx="2"/>
+          <rect x="-16" y="-35" width="18" height="4" fill="#2ecc71" rx="2"/>
+          <circle cx="12" cy="-28" r="7" fill="#0a0b0d" stroke="#f1c40f" stroke-width="1"/>
+          <text x="12" y="-25" text-anchor="middle" fill="#f1c40f" font-size="8" font-weight="bold">6</text>
+        </g>
+
+        <!-- Blue Shadebow (Dead - at spawn) -->
+        <g transform="translate(180, 280)" opacity="0.35">
+          <ellipse cx="0" cy="12" rx="10" ry="5" fill="#000" opacity="0.3"/>
+          <ellipse cx="0" cy="0" rx="12" ry="10" fill="#5dade2" stroke="#fff" stroke-width="1" stroke-dasharray="3"/>
+          <text x="0" y="4" text-anchor="middle" fill="#fff" font-size="10" opacity="0.6">S</text>
+          <text x="0" y="30" text-anchor="middle" fill="#888" font-size="10">⏱ 8s</text>
+        </g>
+
+        <!-- Red Ironclad -->
+        <g transform="translate(510, 280)" filter="url(#shadow)">
+          <ellipse cx="0" cy="20" rx="16" ry="8" fill="#000" opacity="0.4"/>
+          <ellipse cx="0" cy="0" rx="18" ry="14" fill="url(#redGrad)"/>
+          <ellipse cx="0" cy="-5" rx="14" ry="10" fill="#e74c3c" opacity="0.5"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="8" fill="#ec7063"/>
+          <ellipse cx="0" cy="-20" rx="8" ry="6" fill="#f1948a"/>
+          <ellipse cx="14" cy="0" rx="6" ry="10" fill="#c0392b"/>
+          <rect x="-20" y="-38" width="40" height="5" fill="#1a1a1a" rx="2"/>
+          <rect x="-20" y="-38" width="16" height="5" fill="#2ecc71" rx="2"/>
+          <circle cx="-16" cy="-30" r="8" fill="#0a0b0d" stroke="#f1c40f" stroke-width="1"/>
+          <text x="-16" y="-27" text-anchor="middle" fill="#f1c40f" font-size="9" font-weight="bold">6</text>
+        </g>
+
+        <!-- Red Voltaic -->
+        <g transform="translate(560, 290)" filter="url(#shadow)">
+          <ellipse cx="0" cy="18" rx="12" ry="6" fill="#000" opacity="0.4"/>
+          <path d="M-12,15 Q-14,-5 0,-15 Q14,-5 12,15 Z" fill="url(#redGrad)"/>
+          <path d="M-8,12 Q-10,-3 0,-12 Q10,-3 8,12 Z" fill="#e74c3c" opacity="0.6"/>
+          <ellipse cx="0" cy="-18" rx="8" ry="7" fill="#ec7063"/>
+          <line x1="-12" y1="10" x2="-18" y2="-25" stroke="#8e44ad" stroke-width="3"/>
+          <circle cx="-18" cy="-28" r="5" fill="#9b59b6" filter="url(#glow)"/>
+          <rect x="-16" y="-35" width="32" height="4" fill="#1a1a1a" rx="2"/>
+          <rect x="-16" y="-35" width="29" height="4" fill="#2ecc71" rx="2"/>
+          <circle cx="-12" cy="-28" r="7" fill="#0a0b0d" stroke="#f1c40f" stroke-width="1"/>
+          <text x="-12" y="-25" text-anchor="middle" fill="#f1c40f" font-size="8" font-weight="bold">7</text>
+        </g>
+
+        <!-- Red Shadebow -->
+        <g transform="translate(620, 265)" filter="url(#shadow)">
+          <ellipse cx="0" cy="15" rx="10" ry="5" fill="#000" opacity="0.4"/>
+          <!-- Slim ranger body -->
+          <ellipse cx="0" cy="0" rx="10" ry="12" fill="url(#redGrad)"/>
+          <ellipse cx="0" cy="-15" rx="7" ry="6" fill="#ec7063"/>
+          <!-- Bow -->
+          <path d="M-15,-5 Q-20,-15 -15,-25" stroke="#8B4513" stroke-width="2" fill="none"/>
+          <line x1="-15" y1="-5" x2="-15" y2="-25" stroke="#654321" stroke-width="1"/>
+          <rect x="-14" y="-32" width="28" height="4" fill="#1a1a1a" rx="2"/>
+          <rect x="-14" y="-32" width="18" height="4" fill="#2ecc71" rx="2"/>
+          <circle cx="10" cy="-25" r="7" fill="#0a0b0d" stroke="#f1c40f" stroke-width="1"/>
+          <text x="10" y="-22" text-anchor="middle" fill="#f1c40f" font-size="8" font-weight="bold">6</text>
+        </g>
+
+        <!-- Ability Effect - Static Field (purple zone) -->
+        <g transform="translate(485, 285)">
+          <ellipse cx="0" cy="0" rx="60" ry="30" fill="#9b59b6" opacity="0.15"/>
+          <ellipse cx="0" cy="0" rx="60" ry="30" fill="none" stroke="#9b59b6" stroke-width="2" opacity="0.6">
+            <animate attributeName="rx" values="55;65;55" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="ry" values="27;33;27" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.3;0.6" dur="1.5s" repeatCount="indefinite"/>
+          </ellipse>
+          <!-- Lightning particles -->
+          <circle cx="-30" cy="-10" r="2" fill="#d4acf7">
+            <animate attributeName="opacity" values="1;0;1" dur="0.3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="25" cy="8" r="2" fill="#d4acf7">
+            <animate attributeName="opacity" values="0;1;0" dur="0.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="-10" cy="12" r="1.5" fill="#d4acf7">
+            <animate attributeName="opacity" values="1;0;1" dur="0.25s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- Projectile (arrow) -->
+        <g transform="translate(540, 268) rotate(-10)">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="#f1c40f" stroke-width="2"/>
+          <polygon points="20,-3 26,0 20,3" fill="#f1c40f"/>
+          <circle cx="0" cy="0" r="3" fill="#fff" opacity="0.8"/>
+        </g>
+
+      </svg>
+
+      <!-- Kill Feed -->
+      <div class="kill-feed">
+        <div class="kill-entry">
+          <span class="killer">Ironclad</span>
+          <span class="icon">⚔️</span>
+          <span class="victim">Shadebow</span>
+        </div>
+      </div>
+
+      <!-- Ability Bar -->
+      <div class="ability-bar">
+        <div class="ability">Q<span class="key">Q</span></div>
+        <div class="ability on-cd">W<span class="key">W</span><span class="cd">3</span></div>
+        <div class="ability">E<span class="key">E</span></div>
+        <div class="ability">R<span class="key">R</span></div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="minimap-container">
+        <svg width="180" height="90" viewBox="0 0 200 100">
+          <!-- Isometric minimap -->
+          <polygon points="100,5 195,50 100,95 5,50" fill="#0d1117" stroke="#1a1c24"/>
+
+          <!-- Lane -->
+          <line x1="25" y1="50" x2="175" y2="50" stroke="#2a3a4a" stroke-width="8"/>
+
+          <!-- Bases -->
+          <polygon points="25,50 35,44 45,50 35,56" fill="#3498db"/>
+          <polygon points="155,50 165,44 175,50 165,56" fill="#e74c3c"/>
+
+          <!-- Towers -->
+          <rect x="50" y="47" width="4" height="6" fill="#2980b9"/>
+          <rect x="70" y="47" width="4" height="6" fill="#2980b9"/>
+          <rect x="126" y="47" width="4" height="6" fill="#c0392b"/>
+          <rect x="146" y="47" width="4" height="6" fill="#5c1a1a" opacity="0.4"/>
+
+          <!-- Blue Champions -->
+          <circle cx="95" cy="48" r="4" fill="#5dade2" stroke="#fff" stroke-width="1"/>
+          <circle cx="85" cy="45" r="3" fill="#5dade2" stroke="#fff" stroke-width="1"/>
+          <circle cx="40" cy="50" r="2.5" fill="#5dade2" opacity="0.4"/>
+
+          <!-- Red Champions -->
+          <circle cx="105" cy="52" r="4" fill="#ec7063" stroke="#fff" stroke-width="1"/>
+          <circle cx="115" cy="55" r="3" fill="#ec7063" stroke="#fff" stroke-width="1"/>
+          <circle cx="125" cy="47" r="3" fill="#ec7063" stroke="#fff" stroke-width="1"/>
+
+          <!-- Minion clusters -->
+          <circle cx="80" cy="50" r="2" fill="#85c1e9" opacity="0.7"/>
+          <circle cx="120" cy="50" r="2" fill="#f1948a" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Match Stats</div>
+        <div class="stat-row">
+          <span class="stat-label">Kills</span>
+          <span><span class="stat-value blue">5</span> - <span class="stat-value red">3</span></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Towers</span>
+          <span><span class="stat-value blue">2</span> - <span class="stat-value red">1</span></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Gold</span>
+          <span><span class="stat-value blue">8.2k</span> - <span class="stat-value red">6.8k</span></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Ironclad (Blue)</div>
+        <div class="stat-row">
+          <span class="stat-label">KDA</span>
+          <span class="stat-value">3/1/2</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">CS</span>
+          <span class="stat-value">87</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Gold</span>
+          <span class="stat-value">3,240</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Items</span>
+          <span class="stat-value">3/6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="commentary-header">
+        <span>🎙️</span>
+        <span>Live Commentary</span>
+      </div>
+      <div class="commentary-lines">
+        <div class="commentary-line kill">FIRST BLOOD! Blue's Ironclad takes down Shadebow!</div>
+        <div class="commentary-line">Red's Voltaic drops a Static Field in the lane - that's going to zone out the blue team.</div>
+        <div class="commentary-line objective">Blue team takes down the outer tower! They're pushing their advantage.</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
